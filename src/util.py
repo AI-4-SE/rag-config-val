@@ -10,12 +10,14 @@ from llama_index.llms.ollama import Ollama
 from llama_index.core import Settings
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from prompts import CfgNetPromptSettings
-from data import Dependency
+from src.prompts import CfgNetPromptSettings
+from src.data import Dependency
 from typing import Dict, Optional, List
 import numpy as np
-import toml
+import requests
+import traceback
 import os
+import toml
 
 
 DIMENSION = {
@@ -38,7 +40,7 @@ def set_embedding(embed_model_name: str) -> None:
     Set embedding model.
     """
     if embed_model_name == "openai":
-        print("Set OpenAI Embedding.")
+        print(f"Set OpenAI Embedding with key: {os.getenv(key='OPENAI_KEY')}")
         Settings.embed_model = OpenAIEmbedding(
             api_key=os.getenv(key="OPENAI_KEY"),
             model=OpenAIEmbeddingModelType.TEXT_EMBED_ADA_002
@@ -78,7 +80,19 @@ def set_llm(inference_model_name: Optional[str]) -> None:
     else:
         raise Exception("Embedding model has to be set.")
 
-    
+
+def load_config(config_file: str) -> Dict:
+    """
+    Load config from TOML file.
+    """
+    if not config_file.endswith(".toml"):
+            raise Exception("Config file has to be a TOML file.")
+        
+    with open(config_file, "r", encoding="utf-8") as f:
+        config = toml.load(f)
+        
+    return config
+
     
 def get_projet_description(project_name: str) -> str:
     """
@@ -167,7 +181,7 @@ def get_most_similar_shots(shots: List[str], dependency: Dependency) -> str:
 
 
 
-def create_documents_from_github(project_name: str) -> List[Document]:
+def get_documents_from_github(project_name: str) -> List[Document]:
     """
     Get documents from GitHub repository.
     """
@@ -213,33 +227,32 @@ def create_documents_from_github(project_name: str) -> List[Document]:
             ),
         ).load_data(branch=branch)    
 
-        for d in docs:
+        for d in documents:
             d.metadata["index_name"] = "github"
 
         return documents
     except Exception:
-        logging.info("Error occurred while scraping Github.")
         print(traceback.format_exc)
         return []
 
-def docs_from_dir( data_dir: str) -> List[Document]:
+def get_documents_from_dir( data_dir: str) -> List[Document]:
     """
     Get documents from data directory.
     """
     documents = SimpleDirectoryReader(input_dir=data_dir, recursive=True).load_data()
     
-    for d in docs:
-        d.metadata["index_name"] = "so-posts"
+    for doc in documents:
+        doc.metadata["index_name"] = "so-posts"
     
     return documents
 
-def docs_from_urls(urls: List[str]) -> List[Document]:
+def get_documents_from_urls(urls: List[str]) -> List[Document]:
     """
     Get documents from urls.
     """
     documents = SimpleWebPageReader(html_to_text=True).load_data(urls)
     
-    for d in docs:
-        d.metadata["index_name"] = "tech-docs"
+    for doc in documents:
+        doc.metadata["index_name"] = "tech-docs"
 
     return documents

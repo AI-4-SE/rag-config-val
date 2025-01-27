@@ -1,16 +1,8 @@
 from llama_index.core import PromptTemplate
 from typing import Optional
-from data import Dependency
+from src.data import Dependency
 from dataclasses import dataclass
-from rich.logging import RichHandler
 import logging
-
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(message)s",
-    handlers=[RichHandler()],
-)
 
 
 class _PromptSettings:

@@ -1,7 +1,7 @@
 [indexing]
 index_name = "all"
 embedding_model = "qwen"
-embedding_dimension = 3584
+dimension = 3584 
 splitting = "sentence"
 chunk_size = 256
 chunk_overlap = 20
@@ -51,7 +51,7 @@ github = [
     "jetlinks/jetlinks-community",
     "Yin-Hongwei/music-website"
 ]
-data_dir = "../data/so_posts"
+data_dir = "data/so_posts"
 
 [retrieval]
 top_k = 10
