@@ -234,8 +234,8 @@ def run_ingestion():
     # get documents
     documents = []
     documents += get_documents_from_dir(data_dir=config["indexing"]["data_dir"])
-    #documents += get_documents_from_github(project_names=config["indexing"]["github"])
-    #documents += get_documents_from_urls(urls=config["indexing"]["urls"])
+    documents += get_documents_from_github(project_names=config["indexing"]["github"])
+    documents += get_documents_from_urls(urls=config["indexing"]["urls"])
 
     # create text parser
     text_parser = SentenceSplitter(

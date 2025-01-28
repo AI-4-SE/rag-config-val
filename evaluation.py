@@ -42,7 +42,7 @@ def run_evaluation():
     # load config
     config = load_config(config_file=args.config_file)
 
-    # set models
+    # set inference and embedding moddels
     set_llm(inference_model_name=config["generation"]["inference_model"])
     set_embedding(embed_model_name=config["indexing"]["embedding_model"])
 
@@ -64,19 +64,27 @@ def run_evaluation():
         alpha=config["retrieval"]["alpha"]
     )
 
+    # TODO: define genrators
+
     # init rag
     rag = RAG(
         vector_store=vector_store,
-        retriever=retriever
+        retriever=retriever,
+        generators=[]
     )
 
-    retrieval_results = rag.retrieve(
-        dataset=pd.read_csv(config["evaluation"]["data_file"]),
-        enable_websearch=True
-    )
+    #retrieval_results = rag.retrieve(
+    #    dataset=pd.read_csv(config["evaluation"]["data_file"]),
+    #    enable_websearch=True
+    #)
     
-    with open(config["evaluation"]["output_file"], "w", encoding="utf-8") as dest:
-        json.dump(retrieval_results, dest, indent=2)
+    #with open(config["evaluation"]["output_file"], "w", encoding="utf-8") as dest:
+    #    json.dump(retrieval_results, dest, indent=2)
+
+    with open("data/evaluation/test_dependencies_retrieval.json", "r", encoding="utf-8") as src:
+        data = json.load(src)
+
+    generation_results = rag.generate(dataset=data, with_context=True)
 
 
 if __name__ == "__main__":

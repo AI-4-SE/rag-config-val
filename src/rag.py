@@ -11,10 +11,11 @@ from tqdm import tqdm
 
 
 class RAG:
-    def __init__(self, vector_store, retriever) -> None:
+    def __init__(self, vector_store, retriever, generators) -> None:
         self.vector_store = vector_store
         self.prompts = CfgNetPromptSettings
         self.retriever = retriever
+        self.generators = generators
 
         print("Init RAG.")
   
@@ -33,7 +34,7 @@ class RAG:
         """
         retrieval_results = []
 
-        for index, row in tqdm(dataset.iterrows(), total=len(dataset), desc="Processing rows"):
+        for index, row in tqdm(dataset.iterrows(), total=len(dataset), desc="Processing dependencies"):
 
             # turn row data into dict
             row_dict = row.to_dict()
@@ -52,20 +53,23 @@ class RAG:
                     num_websites=3
                 )
 
-                node_ids = add_nodes_to_vector_store(
+                # add nodes to vector store and store their ids
+                web_node_ids = add_nodes_to_vector_store(
                     documents=web_documents,
                     vector_store=self.vector_store
                 )
 
+            # retrieve relavant nodes
             retrieved_nodes = self.retriever.retrieve(
                 retrieval_str=retrieval_str
             )
 
+            # defines context to append to row dict
             context = [
                 {
                     "text": node.get_content(),
-                    "score": str(node.get_score),
-                    "source": node.metadata["source"] if "source" in node.metadata else None,
+                    "score": str(node.get_score()),
+                    "source": node.metadata["source"],
                     "id": node.node_id
                 } for node in retrieved_nodes
             ]
@@ -74,25 +78,64 @@ class RAG:
 
             retrieval_results.append(row_dict)
 
+            # delete nodes from web search
             delete_nodes_by_ids(
                 vector_store=self.vector_store,
-                ids=node_ids
+                ids=web_node_ids
             )
 
         return retrieval_results
     
-    def generate(self, dataset: List) -> List:
+    def generate(self, dataset: List, with_context: bool) -> List:
         """
         Generate answers for sample in the dataset and return generation results.
 
         Args:
             dataset: List
                 The dataset to generate the answers for.
+            with_context: bool
+                Whether to start generation with or without context.
         
         Returns:
             List of the generation results.
         """
-        pass
+        generation_results = []
+
+        for sample in tqdm(dataset, total=len(dataset), desc="Processing dependencies"):
+            # transform data into dependency
+            dependency = transform(row=sample)
+
+            # create prompt parts
+            system_str = self.prompts.get_system_str(dependency=dependency)
+            task_str = self.prompts.get_task_str(dependency=dependency)
+            context_str = "\n\n".join([x["text"] for x in sample["context"]])
+            format_str = self.prompts.get_format_prompt()
+            
+
+            # create final query
+            if with_context:
+                query_str = self.prompts.query_prompt.format(
+                    context_str=context_str,
+                    task_str=task_str,
+                    format_str=format_str
+                )
+            else:
+                query_str = f"{task_str}\n\n{format_str}"
+
+            messages = [
+                {"role": "system", "content": system_str},
+                {"role": "user", "content": query_str }
+            ]
+
+            generations = []
+            for generator in self.generators:
+                response = generator.generate(messages=messages)
+                generations.append({generator.name: response})
+
+            sample.update({"generations": generations})
+            generation_results.append(sample)
+
+        return generation_results
     
     def compute_evaluation_metrics(self, dataset: List) -> dict:
         """
