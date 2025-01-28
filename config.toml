@@ -3,8 +3,6 @@ index_name = "all"
 embedding_model = "qwen"
 dimension = 3584 
 splitting = "sentence"
-chunk_size = 256
-chunk_overlap = 20
 num_websites = 3
 urls = [        
     "https://maven.apache.org/pom.html",
@@ -51,7 +49,7 @@ github = [
     "jetlinks/jetlinks-community",
     "Yin-Hongwei/music-website"
 ]
-data_dir = "data/so_posts"
+data_dir = "../data/so_posts"
 
 [retrieval]
 top_k = 10
@@ -60,13 +58,13 @@ rerank = "colbert"
 top_n = 5
 
 [generation]
-inference_model = "gpt-4o-mini-2024-07-16" 
+inference_model = "gpt-4o-mini-2024-07-18" 
 temperature = 0.7
 top_p = 0.2
 with_rag = true
 
 [evaluation]
-data_file = "data/evaluation/all_dependencies.csv"
-output_file = "data/evaluation/test_dependencies_result.json"
+data_file = "data/evaluation/test_dependencies.csv"
+output_file = "data/evaluation/test_dependencies_retrieval.json"
 
 

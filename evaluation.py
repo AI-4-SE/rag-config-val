@@ -1,83 +1,83 @@
 import toml
 import argparse
 import pandas as pd
+import os
+import json
+from pinecone import Pinecone
+from dotenv import load_dotenv
+from src.rag import RAG
 from typing import List
-from index_builder import create_index, index_documents
-from src.util import get_documents_from_dir, get_documents_from_urls, get_documents_from_github
+from src.retriever import Retriever
+from src.util import load_config, set_embedding, set_llm
 from llama_index.vector_stores.pinecone import PineconeVectorStore
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config_file", type=str, default="config.toml")
+    parser.add_argument("--env_file", type=str, default=".env")
     return parser.parse_args()
 
+def get_index(index_name: str):
+    pinecone_client = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
-def load_config(config_file: str) -> dict:
-    """Load config from TOML file."""
-    with open(config_file, "r") as f:
-        config = toml.load(f)
-    return config
+    if index_name in pinecone_client.list_indexes().names():
+        pinecone_client.Index(index_name)
+    else:
+        print(f"Index '{index_name}' does not exist")
+        return None
 
+    # get pinecone index
+    pinecone_index = pinecone_client.Index(index_name)
 
-def build_index(index_name: str, documents: list, dimension: int, chunk_size: int, chunk_overlap: int):
-    # build index if index not exist
-    index = create_index(index_name=index_name, dimension=dimension)
-
-    vector_store = PineconeVectorStore(index=index)
-
-    index_documents(
-        vector_store=vector_store,
-        documents=documents,
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap
-    )
-
-    # return index if index exists
-    pass
-
-
-def init_rag(index, retriever, generators):
-    # init rag
-    return None
-
+    return pinecone_index
 
 def run_evaluation():
     # parse args
     args = parse_args()
 
+    # load env variables
+    load_dotenv(dotenv_path=args.env_file)
+
     # load config
     config = load_config(config_file=args.config_file)
 
-    documents = []
-    documents += get_documents_from_dir(data_dir=config["indexing"]["data_dir"])
+    # set models
+    set_llm(inference_model_name=config["generation"]["inference_model"])
+    set_embedding(embed_model_name=config["indexing"]["embedding_model"])
 
-    # build index
-    index = build_index(
-        index_name=config["indexing"]["index_name"], 
-        documents=documents
+    # get index
+    index = get_index(index_name=config["indexing"]["index_name"])
+
+    # get vector store
+    vector_store = PineconeVectorStore(
+        pinecone_index=index,
+        add_sparse_vector=True
     )
 
-    # init retriever
-    retriever = None
-
-    # init generator
-    generators = ""
+    # get retriever
+    retriever = Retriever(
+        vector_store=vector_store,
+        rerank=config["retrieval"]["rerank"],
+        top_k=config["retrieval"]["top_k"],
+        top_n=config["retrieval"]["top_n"],
+        alpha=config["retrieval"]["alpha"]
+    )
 
     # init rag
-    rag = init_rag(
-        index=index,
-        retriever=retriever,
-        generators=generators
+    rag = RAG(
+        vector_store=vector_store,
+        retriever=retriever
     )
 
-    # load dataset
-    data_file_path = config["evaluation"]["data_file"]
-    print(f"Loading dataset from: {data_file_path}")
-    dataset = pd.read_csv(data_file_path)
-
-    # evaluate
-
+    retrieval_results = rag.retrieve(
+        dataset=pd.read_csv(config["evaluation"]["data_file"]),
+        enable_websearch=True
+    )
     
+    with open(config["evaluation"]["output_file"], "w", encoding="utf-8") as dest:
+        json.dump(retrieval_results, dest, indent=2)
+
 
 if __name__ == "__main__":
     run_evaluation()

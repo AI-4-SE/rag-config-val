@@ -70,7 +70,8 @@ def set_llm(inference_model_name: Optional[str]) -> None:
     elif inference_model_name.startswith("gpt"):
         Settings.llm = OpenAI(
             model=inference_model_name, 
-            api_key=os.getenv(key="OPENAI_KEY")
+            api_key=os.getenv(key="OPENAI_KEY"),
+            api_base=os.getenv(key="BASE_URL")
         )
     elif inference_model_name.startswith("llama"):
         Settings.llm = Ollama(

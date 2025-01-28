@@ -4,6 +4,7 @@ from llama_index.core.utils import truncate_text
 from typing import Optional, List, Dict
 import json
 import logging
+import pandas as pd
 
 @dataclass
 class Response:
@@ -46,9 +47,7 @@ class Response:
 @dataclass
 class Dependency:
     project: Optional[str] = None
-    dependency_type: Optional[str] = None
     dependency_category: Optional[str] = None
-    dependency_level: Optional[str] = None 
     option_name: Optional[str] = None
     option_file: Optional[str] = None 
     option_value: Optional[str] = None
@@ -59,14 +58,16 @@ class Dependency:
     dependent_option_type: Optional[str] = None
     dependent_option_file: Optional[str] = None 
     dependent_option_technology: Optional[str] = None
+    rating: Optional[str] = None
+    category: Optional[str] = None
+    sub_category: Optional[str] = None
+
 
     def to_dict(self):
         """Convert dependency into a dictionary."""
         return {
             "project": self.project,
-            "dependency_type": self.dependency_type,
             "dependency_category": self.dependency_category,
-            "dependency_level": self.dependency_level,
             "option_name": self.option_name,
             "option_file": self.option_file,
             "option_value": self.option_value,
@@ -77,5 +78,26 @@ class Dependency:
             "dependent_option_file": self.dependent_option_file,
             "dependent_option_type": self.dependent_option_type,
             "dependent_option_technology": self.dependent_option_technology,
+            "rating": self.rating,
+            "category": self.category,
+            "sub_category": self.sub_category
         }
+    
+def transform(row: pd.Series) -> Dependency:
+    return Dependency(
+        project=row["project"],
+        option_name=row["option_name"],
+        option_value=row["option_value"],
+        option_file=row["option_file"],
+        option_type=row["option_type"].split(".")[-1],
+        option_technology=row["option_technology"],
+        dependent_option_name=row["dependent_option_name"],
+        dependent_option_value=row["dependent_option_value"],
+        dependent_option_file=row["dependent_option_file"],
+        dependent_option_type=row["dependent_option_type"].split(".")[-1],
+        dependent_option_technology=row["dependent_option_technology"],
+        rating=row["final_rating"],
+        category=row["final_category"],
+        sub_category=row["sub_category"]
+    )
     
