@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from src.rag import RAG
 from typing import List
 from src.retriever import Retriever
+from src.generator import GeneratorFactory
 from src.util import load_config, set_embedding, set_llm
 from llama_index.vector_stores.pinecone import PineconeVectorStore
 
@@ -65,12 +66,13 @@ def run_evaluation():
     )
 
     # TODO: define genrators
+    generators = [GeneratorFactory().get_generator(model_name="deepseek-r1:70b", temperature=0.7)]
 
     # init rag
     rag = RAG(
         vector_store=vector_store,
         retriever=retriever,
-        generators=[]
+        generators=generators
     )
 
     #retrieval_results = rag.retrieve(

@@ -13,6 +13,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 from src.prompts import CfgNetPromptSettings
 from src.data import Dependency
 from typing import Dict, Optional, List
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import DBSCAN
+from collections import Counter
+import random
 import numpy as np
 import requests
 import traceback
@@ -257,3 +261,59 @@ def get_documents_from_urls(urls: List[str]) -> List[Document]:
         doc.metadata["index_name"] = "tech-docs"
 
     return documents
+
+def get_dominant_element(elements: List) -> str:
+    # Calculate the TF-IDF scores
+    vectorizer = TfidfVectorizer()
+    X = vectorizer.fit_transform(elements)
+    
+    # Cluster the reasons using DBSCAN
+    # These parameters can be tuned based on the nature of the data
+    dbscan = DBSCAN(eps=0.3, min_samples=2, metric='cosine').fit(X)
+    labels = dbscan.labels_
+    # If all reasons are considered as noise by DBSCAN, just return a random reason
+    if len(set(labels)) == 1 and -1 in labels:
+        return random.choice(elements)
+    
+    # Find the dominant cluster
+    counter = Counter(labels)
+    if -1 in counter:  # Removing the noise label
+        del counter[-1]
+    dominant_cluster_label = counter.most_common(1)[0][0]
+    
+    # Get a random reason from the dominant cluster
+    dominant_cluster_reasons = [reason for idx, reason in enumerate(elements) if labels[idx] == dominant_cluster_label]
+    return random.choice(dominant_cluster_reasons)
+
+def get_dominat_response(responses: List) -> List:
+    # Get dominant responses
+    votes = [response["isDependency"] for response in responses]
+
+    votes_counter = Counter(votes)
+
+    dominant_vote = votes.most_common(1)[0][0]
+
+    dominant_responses = [str(response) for response in responses if response["isDependency"] == dominant_vote]
+
+    # Calculate the TF-IDF scores
+    vectorizer = TfidfVectorizer()
+    X = vectorizer.fit_transform(dominant_responses)
+    
+    # Cluster the reasons using DBSCAN
+    # These parameters can be tuned based on the nature of the data
+    dbscan = DBSCAN(eps=0.3, min_samples=2, metric='cosine').fit(X)
+    labels = dbscan.labels_
+    # If all reasons are considered as noise by DBSCAN, just return a random reason
+    if len(set(labels)) == 1 and -1 in labels:
+        return random.choice(dominant_responses)
+    
+    # Find the dominant cluster
+    counter = Counter(labels)
+    if -1 in counter:  # Removing the noise label
+        del counter[-1]
+    dominant_cluster_label = counter.most_common(1)[0][0]
+    
+    # Get a random reason from the dominant cluster
+    dominant_cluster_reasons = [reason for idx, reason in enumerate(dominant_responses) if labels[idx] == dominant_cluster_label]
+    return random.choice(dominant_cluster_reasons)
+

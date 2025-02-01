@@ -135,6 +135,8 @@ class RAG:
             sample.update({"generations": generations})
             generation_results.append(sample)
 
+            print("Generations: ", generations)
+
         return generation_results
     
     def compute_evaluation_metrics(self, dataset: List) -> dict:
