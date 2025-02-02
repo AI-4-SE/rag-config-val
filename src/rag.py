@@ -130,7 +130,7 @@ class RAG:
             generations = []
             for generator in self.generators:
                 response = generator.generate(messages=messages)
-                generations.append({generator.name: response})
+                generations.append({generator.model_name: response})
 
             sample.update({"generations": generations})
             generation_results.append(sample)

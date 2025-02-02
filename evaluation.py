@@ -66,7 +66,10 @@ def run_evaluation():
     )
 
     # TODO: define genrators
-    generators = [GeneratorFactory().get_generator(model_name="deepseek-r1:70b", temperature=0.7)]
+    generators = [
+        GeneratorFactory().get_generator(model_name="deepseek-r1:7b", temperature=0.7),
+        GeneratorFactory().get_generator(model_name="deepseek-r1:14b", temperature=0.7)
+    ]
 
     # init rag
     rag = RAG(
@@ -87,6 +90,9 @@ def run_evaluation():
         data = json.load(src)
 
     generation_results = rag.generate(dataset=data, with_context=True)
+
+    with open("data/evaluation/test_dependencies_generations.json", "w", encoding="utf-8") as dest:
+        json.dump(generation_results, dest, indent=2)
 
 
 if __name__ == "__main__":

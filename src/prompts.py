@@ -258,7 +258,6 @@ class _CfgNetPromptSettings(_PromptSettings):
         "{{\n"
         "\t“plan”: string, // Write down a step-by-step plan on how to solve the task given the information above.\n"
         "\t“rationale”: string, // Provide a concise explanation of whether and why the configuration options depend on each other due to value-equality.\n"
-        "\t“uncertainty”: integer, // Rate your certainty of this dependency on a scale from 0 (completely uncertain) to 10 (absolutely certain), given the context, plan, and rationale.\n"
         "\t“isDependency”: boolean // True if a dependency exists, or False otherwise.\n"
         "}}"
     )

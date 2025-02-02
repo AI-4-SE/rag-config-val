@@ -291,7 +291,7 @@ def get_dominat_response(responses: List) -> List:
 
     votes_counter = Counter(votes)
 
-    dominant_vote = votes.most_common(1)[0][0]
+    dominant_vote = votes_counter.most_common(1)[0][0]
 
     dominant_responses = [str(response) for response in responses if response["isDependency"] == dominant_vote]
 
