@@ -68,8 +68,7 @@ def run_evaluation():
 
     # TODO: define genrators
     generators = [
-        GeneratorFactory().get_generator(model_name="deepseek-r1:14b", temperature=config["temperature"]),
-        GeneratorFactory().get_generator(model_name="gpt-4o-mini-2024-07-18", temperature=config["temperature"])
+        GeneratorFactory().get_generator(model_name=inference_model_name, temperature=config["temperature"]) for inference_model_name in config["inference_models"]
     ]
 
     # init rag
@@ -97,7 +96,7 @@ def run_evaluation():
     metrics = compute_evaluation_metrics(dataset=generation_results)
 
     df_results = pd.DataFrame(metrics)
-    df_results.to_csv(f"data/evaluation/validation_effectiveness/{config_name}.csv", index=False)
+    df_results.to_csv(f"data/evaluation/validation_effectiveness/{config_name}_metrics.csv", index=False)
 
 
 if __name__ == "__main__":

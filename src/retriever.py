@@ -88,11 +88,13 @@ class Retriever():
         )
 
         # retrieve nodes
+        print("Retrieving nodes.")
         retrieved_nodes = query_engine.retrieve(
             query_bundle=QueryBundle(query_str=retrieval_str)
         )
 
         # rerank nodes
+        print("Reranking nodes.")
         reranked_nodes = self.rerank_nodes(
             nodes=retrieved_nodes, 
             retrieval_str=retrieval_str

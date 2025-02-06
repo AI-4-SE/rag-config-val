@@ -23,7 +23,13 @@ logging.basicConfig(
 
 class GeneratorFactory:
     gpt_model_names = ["gpt-4o-mini-2024-07-18", "gpt-4o-2024-11-20"]
-    ollama_model_names = ["llama3.1:70b ", "deepseek-r1:7b", "deepseek-r1:14b", "deepseek-r1:70b"]
+    ollama_model_names = [
+        "llama3.1:70b", 
+        "llama3.1:8b", 
+        "deepseek-r1:14b", 
+        "deepseek-r1:70b", 
+        "phi4:latest"
+    ]
 
     def get_generator(self, model_name: str, temperature: float = 0.5):
         if model_name in self.gpt_model_names:

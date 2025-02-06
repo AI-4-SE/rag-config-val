@@ -325,6 +325,8 @@ def compute_evaluation_metrics(dataset: List) -> list:
 
     for model in models:
 
+        print("Model: ", model)
+
         true_positives = []
         true_negatives = []
         false_positives = []
@@ -337,27 +339,27 @@ def compute_evaluation_metrics(dataset: List) -> list:
             model_response = entry["generations"][model]
             isDependency = model_response["isDependency"]
 
-            if not isDependency:
+            if isinstance(isDependency, str) and isDependency == "None":
                 skipped += 1
                 continue
 
             # TP: The LLM validates a dependency as correct and the dependency is correct
-            if isDependency and str(final_rating).lower() == "true":
+            if isDependency and final_rating:
                 accuracy_count.append(1)
                 true_positives.append(1)
                 
             # FP: The LLM validates a dependency as correct, but the dependency is actually incorrect
-            if isDependency and str(final_rating).lower() == "false":
+            if isDependency and not final_rating:
                 accuracy_count.append(0)
                 false_positives.append(1)
 
             # TN: The LLM validates a dependency as incorrect and the dependency is incorrect
-            if not isDependency and str(final_rating).lower() == "false":
+            if not isDependency and not final_rating:
                 accuracy_count.append(1)
                 true_negatives.append(1)
 
             # FN: The LLM validates a dependency as incorrect, but the dependency is actually correct
-            if not isDependency and  str(final_rating).lower() == "true":
+            if not isDependency and final_rating:
                 accuracy_count.append(0)
                 false_negatives.append(1)
 
@@ -367,9 +369,14 @@ def compute_evaluation_metrics(dataset: List) -> list:
         tn = sum(true_negatives)
         accuracy = sum(accuracy_count)/len(accuracy_count)
 
-        precision = tp/(tp+fp)
-        recall = tp/(tp+fn)
-        f1_score = 2 * (precision * recall) / (precision + recall)
+        precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+        recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+        f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+
+        print("TP: ", tp)
+        print("FP: ", fp)
+        print("FN: ", fn)
+        print("TN: ", tn)
 
         metrics.append({
             "model": model,

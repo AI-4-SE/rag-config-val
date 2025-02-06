@@ -1,0 +1,8 @@
+model,precision,recall,f1_score,accuracy,skipped
+gpt-4o-mini-2024-07-18,1.0,1.0,1.0,1.0,0
+gpt-4o-2024-11-20,1.0,1.0,1.0,1.0,0
+deepseek-r1:14b,0.0,0.0,0.0,0.75,0
+deepseek-r1:70b,0.0,0.0,0.0,0.75,0
+llama3.1:70b,0.0,0.0,0.0,0.75,0
+llama3.1:8b,0.0,0.0,0.0,0.75,0
+phi4:latest,0.0,0.0,0.0,0.75,0
