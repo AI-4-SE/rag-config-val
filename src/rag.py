@@ -1,8 +1,8 @@
 from typing import List
 from llama_index.core import Document, Settings
 from llama_index.vector_stores.pinecone import PineconeVectorStore
-from src.util import load_config, set_embedding, set_llm
-from src.ingestion import get_documents_from_web, add_nodes_to_vector_store, delete_nodes_by_ids
+from src.utils import load_config, set_embedding, set_llm
+from src.utils_ingestion import get_documents_from_web, add_nodes_to_vector_store, delete_nodes_by_ids
 from src.data import transform
 from src.retriever import Retriever
 from src.prompts import CfgNetPromptSettings

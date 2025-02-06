@@ -58,4 +58,4 @@ github = [
     "Yin-Hongwei/music-website"
 ]
 
-data_dir = "../data/so_posts"
+data_dir = "data/so_posts"
