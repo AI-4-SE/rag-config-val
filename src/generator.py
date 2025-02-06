@@ -25,7 +25,7 @@ class GeneratorFactory:
     gpt_model_names = ["gpt-4o-mini-2024-07-18", "gpt-4o-2024-11-20"]
     ollama_model_names = ["llama3.1:70b ", "deepseek-r1:7b", "deepseek-r1:14b", "deepseek-r1:70b"]
 
-    def get_generator(self, model_name: str, temperature: int):
+    def get_generator(self, model_name: str, temperature: float = 0.5):
         if model_name in self.gpt_model_names:
             return GPTGenerator(
                 model_name=model_name,
@@ -42,7 +42,7 @@ class GeneratorFactory:
         
 
 class Generator:
-    def __init__(self, model_name: str, temperature: int, max_tokens: int = 500) -> None:
+    def __init__(self, model_name: str, temperature: float = 0.5, max_tokens: int = 500) -> None:
         self.model_name = model_name
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -50,7 +50,7 @@ class Generator:
         self.max_genrations = 3
         self.keys = ["plan", "rationale", "isDependency"]
 
-    def generate(self, messages) -> str:
+    def generate(self, messages) -> dict:
         """Generate responses and return the most dominant response."""
         response_pool = []
 
@@ -95,10 +95,11 @@ class Generator:
     
 
 class GPTGenerator(Generator):
-    def __init__(self, model_name: str, temperature: int) -> None:
+    def __init__(self, model_name: str, temperature: float = 0.5, max_tokens: int = 500) -> None:
         super().__init__(
             model_name=model_name, 
-            temperature=temperature
+            temperature=temperature,
+            max_tokens=max_tokens
         )
         print(f"GPT ({model_name}) generator initialized.")
 

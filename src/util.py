@@ -21,22 +21,8 @@ import numpy as np
 import requests
 import traceback
 import os
+import json
 import toml
-
-
-DIMENSION = {
-    "openai": 1536,
-    "qwen": 3584,
-    "sfr": 4096
-}
-
-def get_embedding_dimension(embed_model_name: str) -> int:
-    dimension = DIMENSION[embed_model_name]
-
-    if not isinstance(dimension, int):
-        raise Exception(f"Dimension has to be an integer and not of type {type(dimension)}")
-
-    return dimension
 
 
 def set_embedding(embed_model_name: str) -> None:
@@ -44,9 +30,9 @@ def set_embedding(embed_model_name: str) -> None:
     Set embedding model.
     """
     if embed_model_name == "openai":
-        print(f"Set OpenAI Embedding with key: {os.getenv(key='OPENAI_KEY')}")
+        print(f"Set OpenAI Embedding")
         Settings.embed_model = OpenAIEmbedding(
-            api_key=os.getenv(key="OPENAI_KEY"),
+            api_key=os.getenv(key="OPENAI_KEY_API"),
             model=OpenAIEmbeddingModelType.TEXT_EMBED_ADA_002
         )
     elif embed_model_name == "ollama":
@@ -91,7 +77,7 @@ def load_config(config_file: str) -> Dict:
     Load config from TOML file.
     """
     if not config_file.endswith(".toml"):
-            raise Exception("Config file has to be a TOML file.")
+        raise Exception("Config file has to be a TOML file.")
         
     with open(config_file, "r", encoding="utf-8") as f:
         config = toml.load(f)
@@ -285,35 +271,113 @@ def get_dominant_element(elements: List) -> str:
     dominant_cluster_reasons = [reason for idx, reason in enumerate(elements) if labels[idx] == dominant_cluster_label]
     return random.choice(dominant_cluster_reasons)
 
-def get_dominat_response(responses: List) -> List:
+def get_dominat_response(responses: List[Dict]) -> List:
     # Get dominant responses
     votes = [response["isDependency"] for response in responses]
-
     votes_counter = Counter(votes)
-
     dominant_vote = votes_counter.most_common(1)[0][0]
 
-    dominant_responses = [str(response) for response in responses if response["isDependency"] == dominant_vote]
+    # Filter dominant responses as dictionaries
+    dominant_responses = [response for response in responses if response["isDependency"] == dominant_vote]
+
+    # Extract textual reasons for clustering
+    text_reasons = [str(response) for response in dominant_responses]
 
     # Calculate the TF-IDF scores
     vectorizer = TfidfVectorizer()
-    X = vectorizer.fit_transform(dominant_responses)
-    
+    X = vectorizer.fit_transform(text_reasons)
+
     # Cluster the reasons using DBSCAN
-    # These parameters can be tuned based on the nature of the data
     dbscan = DBSCAN(eps=0.3, min_samples=2, metric='cosine').fit(X)
     labels = dbscan.labels_
-    # If all reasons are considered as noise by DBSCAN, just return a random reason
+
+    # If all reasons are noise, return a random dictionary from dominant responses
     if len(set(labels)) == 1 and -1 in labels:
         return random.choice(dominant_responses)
-    
+
     # Find the dominant cluster
     counter = Counter(labels)
     if -1 in counter:  # Removing the noise label
         del counter[-1]
     dominant_cluster_label = counter.most_common(1)[0][0]
-    
+
     # Get a random reason from the dominant cluster
-    dominant_cluster_reasons = [reason for idx, reason in enumerate(dominant_responses) if labels[idx] == dominant_cluster_label]
+    dominant_cluster_reasons = [
+        dominant_responses[idx] for idx, reason in enumerate(text_reasons) if labels[idx] == dominant_cluster_label
+    ]
+
     return random.choice(dominant_cluster_reasons)
 
+def compute_evaluation_metrics(dataset: List) -> list:
+    """
+    Compute the evaluation metrics, including precision, recall and F1 score.
+
+    Args:
+        dataset: List
+            The dataset to compute the evaluation metrics for.
+
+    Returns:
+        List of the evaluation results.
+    """
+    models = list(dataset[0]["generations"].keys())
+
+    metrics = []
+
+    for model in models:
+
+        true_positives = []
+        true_negatives = []
+        false_positives = []
+        false_negatives = []
+        accuracy_count = []
+        skipped = 0
+
+        for entry in dataset:
+            final_rating = entry["final_rating"]
+            model_response = entry["generations"][model]
+            isDependency = model_response["isDependency"]
+
+            if not isDependency:
+                skipped += 1
+                continue
+
+            # TP: The LLM validates a dependency as correct and the dependency is correct
+            if isDependency and str(final_rating).lower() == "true":
+                accuracy_count.append(1)
+                true_positives.append(1)
+                
+            # FP: The LLM validates a dependency as correct, but the dependency is actually incorrect
+            if isDependency and str(final_rating).lower() == "false":
+                accuracy_count.append(0)
+                false_positives.append(1)
+
+            # TN: The LLM validates a dependency as incorrect and the dependency is incorrect
+            if not isDependency and str(final_rating).lower() == "false":
+                accuracy_count.append(1)
+                true_negatives.append(1)
+
+            # FN: The LLM validates a dependency as incorrect, but the dependency is actually correct
+            if not isDependency and  str(final_rating).lower() == "true":
+                accuracy_count.append(0)
+                false_negatives.append(1)
+
+        tp = sum(true_positives)
+        fp = sum(false_positives)
+        fn = sum(false_negatives)
+        tn = sum(true_negatives)
+        accuracy = sum(accuracy_count)/len(accuracy_count)
+
+        precision = tp/(tp+fp)
+        recall = tp/(tp+fn)
+        f1_score = 2 * (precision * recall) / (precision + recall)
+
+        metrics.append({
+            "model": model,
+            "precision": precision,
+            "recall": recall,
+            "f1_score": f1_score,
+            "accuracy": accuracy,
+            "skipped": skipped
+        })
+
+    return metrics

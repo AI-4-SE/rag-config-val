@@ -8,6 +8,7 @@ from src.retriever import Retriever
 from src.prompts import CfgNetPromptSettings
 import pandas as pd
 from tqdm import tqdm
+import json
 
 
 class RAG:
@@ -78,11 +79,12 @@ class RAG:
 
             retrieval_results.append(row_dict)
 
-            # delete nodes from web search
-            delete_nodes_by_ids(
-                vector_store=self.vector_store,
-                ids=web_node_ids
-            )
+            # delete nodes from websearch if enabled
+            if enable_websearch:
+                delete_nodes_by_ids(
+                    vector_store=self.vector_store,
+                    ids=web_node_ids
+                )
 
         return retrieval_results
     
@@ -127,27 +129,12 @@ class RAG:
                 {"role": "user", "content": query_str }
             ]
 
-            generations = []
+            generations = {}
             for generator in self.generators:
                 response = generator.generate(messages=messages)
-                generations.append({generator.model_name: response})
+                generations.update({generator.model_name: response})
 
             sample.update({"generations": generations})
             generation_results.append(sample)
 
-            print("Generations: ", generations)
-
         return generation_results
-    
-    def compute_evaluation_metrics(self, dataset: List) -> dict:
-        """
-        Compute the evaluation metrics, including precision, recall and F1 score.
-
-        Args:
-            dataset: List
-                The dataset to compute the evaluation metrics for.
-
-        Returns:
-            List of the evaluation results.
-        """
-        pass

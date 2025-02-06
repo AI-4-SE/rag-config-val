@@ -1,18 +1,15 @@
 index_name = "ada-index"
 embedding_model = "openai"
 embedding_dimension = 1536
-rerank = "colbert"
+rerank = "sentence"
 top_n = 5
-inference_model = [
-    "gpt-4o-mini-2024-07-18",
-    "gpt-4o-2024-11-20",
-    "deepseek-r1:14b",
-    "deepseek-r1:70b",
-    "llama3:70b",
-    "phi4:latest"
+web_search_enabled = false
+inference_models = [
+    "gpt-4o-mini-2024-07-18"
 ]
 temperature = 0.5
-with_rag = true
+with_context = true
 data_file = "data/evaluation/test_dependencies.csv"
-
+retrieval_output_file = "data/evaluation/retrieval_results/test_dependencies_config1.json"
+generation_output_file = "data/evaluation/generation_results/test_dependencies_config1.json"
 

@@ -19,7 +19,7 @@ import backoff
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config_file", type=str, default="../config.toml")
+    parser.add_argument("--config_file", type=str, default="../configs/ingestion.toml")
     parser.add_argument("--env_file", type=str, default="../.env")
     return parser.parse_args()
 
@@ -97,28 +97,44 @@ def get_documents_from_github(project_names: List) -> List[Document]:
                 doc.metadata["source"] = "github"
             documents += docs
         except Exception:
-            print.info("Error occurred while scraping Github.")
-            print(traceback.format_exc)
+            print(f"Error occurred while scraping the project {project_name}")
+            print(traceback.format_exc())
+            continue
+
+    if documents:
+        print("Data from github repositories successfully loaded.")
+        return documents
+    return []
 
 
 def get_documents_from_dir(data_dir: str) -> List[Document]:
     """
     Get documents from data directory.
     """
+    print(f"Get data from directory: {data_dir}")
     documents = SimpleDirectoryReader(input_dir=data_dir, recursive=True).load_data()
     for doc in documents:
         doc.metadata["source"] = "so-posts"
-    return documents
+
+    if documents:
+        print("Data from directory successfully loaded.")
+        return documents
+    return []
 
 
-def get_documents_from_urls(self, urls: List[str]) -> List[Document]:
+def get_documents_from_urls(urls: List[str]) -> List[Document]:
     """
     Get documents from urls.
     """
+    print("Get data from urls.")
     documents = SimpleWebPageReader(html_to_text=True).load_data(urls)
     for doc in documents:
         doc.metadata["source"] = "tech-docs"
-    return documents
+    
+    if documents:
+        print("Data from urls successfully loaded.")
+        return documents
+    return []
 
 
 def add_nodes_to_vector_store(documents: List[Document], vector_store: PineconeVectorStore) -> List:
@@ -188,75 +204,85 @@ def run_ingestion():
 
     # load config
     config = load_config(config_file=args.config_file)
-    index_name = config["indexing"]["index_name"]
-    dimension = config["indexing"]["dimension"]
-    embed_model_name = config["indexing"]["embedding_model"]
-    
-    set_embedding(embed_model_name=embed_model_name)
 
-    # create Pinecone client
-    pinecone_client = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+    urls = config["data"]["urls"]
+    data_dir = config["data"]["data_dir"]  
+    github_project_names = config["data"]["github"]
 
-    # create index if not exist
-    if index_name not in pinecone_client.list_indexes().names():
-        print(f"Create index: {index_name}")
-        pinecone_client.create_index(
-            name=index_name,
-            dimension=dimension,
-            metric="dotproduct",
-            spec=ServerlessSpec(
-                cloud="aws",
-                region="us-east-1"
+    for index_name, values in config["indices"].items():
+        print(f"Run ingestion for index: {index_name}")
+        
+        index_name = values["index_name"]
+        dimension = values["dimension"]
+        embed_model_name = values["embedding_model"]
+
+        # set embedding model
+        set_embedding(embed_model_name=embed_model_name)
+
+        # create Pinecone client
+        pinecone_client = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+
+        # create index if not exist
+        if index_name not in pinecone_client.list_indexes().names():
+            print(f"Create index: {index_name}")
+            pinecone_client.create_index(
+                name=index_name,
+                dimension=dimension,
+                metric="dotproduct",
+                spec=ServerlessSpec(
+                    cloud="aws",
+                    region="us-east-1"
+                )
             )
+        else:
+            print(f"Index: '{index_name}' already exists")
+
+        # get pinecone index
+        pinecone_index = pinecone_client.Index(index_name)
+
+        # check if index contains data
+        stats = pinecone_index.describe_index_stats()
+        vector_count = stats.get("total_vector_count", 0)
+
+        # delete all vectors in index
+        if vector_count > 0:
+            pinecone_index.delete(delete_all=True)
+            print(f"Vectors in index '{index_name}' has been deleted.")
+        else:
+            print(f"Index '{index_name}' is empty.")
+
+        # create vector store
+        vector_store = PineconeVectorStore(
+            pinecone_index=pinecone_index,
+            add_sparse_vector=True
         )
-    else:
-        print(f"Index: '{index_name}' already exists")
 
-    # get pinecone index
-    pinecone_index = pinecone_client.Index(index_name)
+        # get documents from different sources
+        documents = []
+        documents += get_documents_from_dir(data_dir=data_dir)
+        documents += get_documents_from_github(project_names=github_project_names)
+        documents += get_documents_from_urls(urls=urls)
 
-    # check if index contains data
-    stats = pinecone_index.describe_index_stats()
-    vector_count = stats.get("total_vector_count", 0)
+        # create text parser
+        text_parser = SentenceSplitter(
+            chunk_size=256,
+            chunk_overlap=10
+        )
 
-    if vector_count > 0:
-        pinecone_index.delete(delete_all=True)
-        print(f"Vectors in index '{index_name}' has been deleted.")
-    else:
-        print(f"Index '{index_name}' is empty.")
+        # build list of transformations
+        transformations = [text_parser, Settings.embed_model]
 
-    # create vector store
-    vector_store = PineconeVectorStore(
-        pinecone_index=pinecone_index,
-        add_sparse_vector=True
-    )
+        # create ingestion pipeline
+        pipeline = IngestionPipeline(
+            transformations=transformations,
+            vector_store=vector_store
+        )
 
-    # get documents
-    documents = []
-    documents += get_documents_from_dir(data_dir=config["indexing"]["data_dir"])
-    documents += get_documents_from_github(project_names=config["indexing"]["github"])
-    documents += get_documents_from_urls(urls=config["indexing"]["urls"])
-
-    # create text parser
-    text_parser = SentenceSplitter(
-        chunk_size=256,
-        chunk_overlap=10
-    )
-
-    # build list of transformations
-    transformations = [text_parser, Settings.embed_model]
-
-    # create ingestion pipeline
-    pipeline = IngestionPipeline(
-         transformations=transformations,
-         vector_store=vector_store
-    )
-
-    # run ingestion pipeline
-    pipeline.run(
-        documents=documents,
-        show_progress=True
-    )
+        # run ingestion pipeline
+        pipeline.run(
+            documents=documents,
+            show_progress=True
+        )
     
 
 if __name__ == "__main__":
