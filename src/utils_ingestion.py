@@ -4,6 +4,7 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.readers.web import SimpleWebPageReader
 from llama_index.core import Settings, Document, SimpleDirectoryReader
 from duckduckgo_search import DDGS
+from pinecone import Pinecone, ServerlessSpec
 from typing import List
 import os
 import requests
@@ -33,65 +34,64 @@ def get_documents_from_web(query_str: str, num_websites: int = 3) -> List[Docume
 
     return documents
 
-def get_documents_from_github(project_names: List) -> List[Document]:
+@backoff.on_exception(
+    backoff.expo,
+    Exception,
+    max_tries=5
+)
+def get_documents_from_github(project_name: str) -> List[Document]:
     """
     Get documents from GitHub repositories.
     """
     documents = []
-    for project_name in project_names:
-        print(f"Start scraping the repository of {project_name}.")
-        response = requests.get(f"https://api.github.com/search/repositories?q={project_name}")
-        response.raise_for_status()
+    print(f"Start scraping the repository of {project_name}.")
+    response = requests.get(f"https://api.github.com/search/repositories?q={project_name}")
+    response.raise_for_status()
 
-        data = response.json()
+    data = response.json()
 
-        if data['total_count'] > 0:
-            owner = data["items"][0]["owner"]["login"]
-            branch = data["items"][0]["default_branch"]
-            repo_name = data['items'][0]["name"]
-        else:
-            return []
-                        
-        try:
-            github_client = GithubClient(
-                github_token=os.getenv(key="GITHUB_TOKEN"), 
-                verbose=True
-            )
+    if data['total_count'] > 0:
+        owner = data["items"][0]["owner"]["login"]
+        branch = data["items"][0]["default_branch"]
+        repo_name = data['items'][0]["name"]
+    else:
+        return []
+                    
+    try:
+        github_client = GithubClient(
+            github_token=os.getenv(key="GITHUB_TOKEN"), 
+            verbose=True
+        )
 
-            docs = GithubRepositoryReader(
-                github_client=github_client,
-                owner=owner,
-                repo=repo_name,
-                use_parser=False,
-                verbose=False,
-                filter_file_extensions=(
-                    [
-                        ".xml",
-                        ".properties",
-                        ".yml",
-                        "Dockerfile",
-                        ".json",
-                        ".ini",
-                        ".cnf",
-                        ".toml",
-                        ".conf",
-                        ".md"
-                    ],
-                    GithubRepositoryReader.FilterType.INCLUDE,
-                ),
-            ).load_data(branch=branch)    
-            for doc in docs:
-                doc.metadata["source"] = "github"
-            documents += docs
-        except Exception:
-            print(f"Error occurred while scraping the project {project_name}")
-            print(traceback.format_exc())
-            continue
-
-    if documents:
-        print("Data from github repositories successfully loaded.")
+        docs = GithubRepositoryReader(
+            github_client=github_client,
+            owner=owner,
+            repo=repo_name,
+            use_parser=False,
+            verbose=False,
+            filter_file_extensions=(
+                [
+                    ".xml",
+                    ".properties",
+                    ".yml",
+                    "Dockerfile",
+                    ".json",
+                    ".ini",
+                    ".cnf",
+                    ".toml",
+                    ".conf",
+                    ".md"
+                ],
+                GithubRepositoryReader.FilterType.INCLUDE,
+            ),
+        ).load_data(branch=branch)    
+        for doc in docs:
+            doc.metadata["source"] = "github"
+        documents += docs
         return documents
-    return []
+    except Exception:
+        print(f"Error occurred while scraping the project {project_name}")
+        print(traceback.format_exc())
 
 
 def get_documents_from_dir(data_dir: str) -> List[Document]:
@@ -155,28 +155,4 @@ def add_nodes_to_vector_store(documents: List[Document], vector_store: PineconeV
 
     vector_store.add(nodes)
     print(f"Nodes successfully added to vector store.")
-    return [node.node_id for node in nodes]
-
-def delete_nodes_by_metadata(vector_store: PineconeVectorStore, metadata_filter: dict):
-    """
-    Delete nodes from the vector store using a metadata filter.
-
-    Args:
-        vector_store (PineconeVectorStore): The initialized Pinecone vector store.
-        metadata_filter (dict): Metadata filter to specify which nodes to delete.
-    """
-    # Delete nodes using metadata filter
-    vector_store._pinecone_index.delete(filter=metadata_filter, namespaces="")
-    print(f"Successfully deleted nodes with metadata: {metadata_filter}")
-
-def delete_nodes_by_ids(vector_store: PineconeVectorStore, ids: List):
-    """
-    Delete nodes from the vector store via ids.
-
-    Args:
-        vector_store (PineconeVectorStore): The initialized Pinecone vector store.
-        ids (list): list of node ids.
-    """
-    # Delete nodes using metadata filter
-    vector_store._pinecone_index.delete(ids=ids)
-    print("Successfully deleted nodes via ids.")
+    return [f"{node.ref_doc_id}#{node.node_id}" for node in nodes]

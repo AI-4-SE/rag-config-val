@@ -54,6 +54,7 @@ class RAG:
                     num_websites=3
                 )
 
+                print(f"Add {len(web_documents)} web documents to vector store.")
                 # add nodes to vector store and store their ids
                 web_node_ids = add_nodes_to_vector_store(
                     documents=web_documents,
@@ -81,6 +82,7 @@ class RAG:
 
             # delete nodes from websearch if enabled
             if enable_websearch:
+                print(f"Delete nodes from vector store.")
                 delete_nodes_by_ids(
                     vector_store=self.vector_store,
                     ids=web_node_ids

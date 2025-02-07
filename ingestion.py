@@ -1,6 +1,6 @@
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
-from utils import load_config, set_embedding
+from src.utils import load_config, set_embedding
 from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.ingestion import IngestionPipeline
@@ -80,10 +80,17 @@ def run_ingestion():
             add_sparse_vector=True
         )
 
-        # get documents from different sources
+        # store documents from different sources
         documents = []
+
+        # get documents from a directory
         documents += get_documents_from_dir(data_dir=data_dir)
-        documents += get_documents_from_github(project_names=github_project_names)
+
+        # get documents from github repositories
+        for project_name in github_project_names:
+            documents += get_documents_from_github(project_name=project_name)
+
+        # get documents from urls
         documents += get_documents_from_urls(urls=urls)
 
         # create text parser

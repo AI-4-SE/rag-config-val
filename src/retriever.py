@@ -92,6 +92,7 @@ class Retriever():
         retrieved_nodes = query_engine.retrieve(
             query_bundle=QueryBundle(query_str=retrieval_str)
         )
+        print("Len retrieved nodes: ", len(retrieved_nodes))
 
         # rerank nodes
         print("Reranking nodes.")
@@ -99,5 +100,6 @@ class Retriever():
             nodes=retrieved_nodes, 
             retrieval_str=retrieval_str
         )
+        print("Len reranked nodes: ", len(reranked_nodes))
 
         return reranked_nodes
