@@ -3,13 +3,14 @@ from llama_index.readers.github import GithubRepositoryReader, GithubClient
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.readers.web import SimpleWebPageReader
 from llama_index.core import Settings, Document, SimpleDirectoryReader
+from llama_index.core.ingestion import IngestionPipeline
 from duckduckgo_search import DDGS
-from pinecone import Pinecone, ServerlessSpec
 from typing import List
 import os
 import requests
 import traceback
 import backoff
+import time
 
 
 @backoff.on_exception(
@@ -155,4 +156,47 @@ def add_nodes_to_vector_store(documents: List[Document], vector_store: PineconeV
 
     vector_store.add(nodes)
     print(f"Nodes successfully added to vector store.")
+    return [f"{node.ref_doc_id}#{node.node_id}" for node in nodes]
+
+def add_nodes(documents: List[Document], vector_store: PineconeVectorStore) -> List:
+    """
+    Parse documents into nodes and add them to a vector store.
+
+    Args:
+        documents (list): List of documents to add to the vector store
+        vector_store (PineconeVectorStore): The initialized Pinecone vector store.
+        embed:model: Embedding model to create the embeddings.
+        text_parser: Technique to splite documents into smaller chunks.
+
+    Return:
+        List of node ids.
+    """
+
+    # Create text parser
+    text_parser = SentenceSplitter(
+        chunk_size=256,
+        chunk_overlap=10
+    )
+
+    # Parse documents into nodes
+    nodes = text_parser.get_nodes_from_documents(documents=documents)
+
+    # build list of transformations
+    transformations = [text_parser, Settings.embed_model]
+
+    # create ingestion pipeline
+    pipeline = IngestionPipeline(
+        transformations=transformations,
+        vector_store=vector_store
+    )
+
+    # run ingestion pipeline
+    pipeline.run(
+        documents=documents,
+        show_progress=True
+    )
+
+    # wait a few seconds until vector store is updated
+    time.sleep(10)
+    
     return [f"{node.ref_doc_id}#{node.node_id}" for node in nodes]

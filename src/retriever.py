@@ -1,27 +1,22 @@
 from llama_index.core import QueryBundle, Settings, VectorStoreIndex
 from llama_index.core.schema import NodeWithScore
-from llama_index.core.retrievers import BaseRetriever
-from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.postprocessor.sbert_rerank import SentenceTransformerRerank
 from llama_index.postprocessor.colbert_rerank import ColbertRerank
-from llama_index.core.vector_stores import VectorStoreQuery
-from typing import Any, List, Optional
+from typing import Any, List
 
 
 class Retriever():
     def __init__(
         self,
-        vector_store: PineconeVectorStore,
         rerank: str,
-        top_k: int = 10,
-        top_n: int = 5,
-        alpha: float = 0.5
+        top_k: int,
+        top_n: int,
+        alpha: float
     ) -> None:
         """Init params."""
-        self.vector_store = vector_store
         self.rerank = rerank
-        self.top_k = top_k
         self.top_n = top_n
+        self.top_k = top_k
         self.alpha = alpha
 
         print("Init retriever.")
@@ -61,11 +56,11 @@ class Retriever():
             nodes=nodes,
             query_bundle=QueryBundle(query_str=retrieval_str)
         )
-
+        print(f"Reranked {len(nodes)} in {len(reranked_nodes)} nodes.")
         return reranked_nodes
     
 
-    def retrieve(self, retrieval_str: str) -> List[NodeWithScore]:
+    def retrieve(self, vector_store, retrieval_str: str) -> List[NodeWithScore]:
         """
         Retrieve and rerank nodes based on the given retrieval string.
 
@@ -76,7 +71,7 @@ class Retriever():
         """
         # create vector store index
         index = VectorStoreIndex.from_vector_store(
-            vector_store=self.vector_store,
+            vector_store=vector_store,
             embed_model=Settings.embed_model
         )
 
@@ -88,18 +83,9 @@ class Retriever():
         )
 
         # retrieve nodes
-        print("Retrieving nodes.")
         retrieved_nodes = query_engine.retrieve(
             query_bundle=QueryBundle(query_str=retrieval_str)
         )
         print("Len retrieved nodes: ", len(retrieved_nodes))
 
-        # rerank nodes
-        print("Reranking nodes.")
-        reranked_nodes = self.rerank_nodes(
-            nodes=retrieved_nodes, 
-            retrieval_str=retrieval_str
-        )
-        print("Len reranked nodes: ", len(reranked_nodes))
-
-        return reranked_nodes
+        return retrieved_nodes

@@ -22,34 +22,34 @@
     "explanation": "modelVersion has to be consistent across all modules and is generally set to 4.0.0 since it is the only supported version",
     "context": [
       {
-        "text": "[![Maven Model](../../../images/apache-maven-project.png)](../../../)\n\n[![](../../../images/maven-logo-black-on-white.png)](../../../)\n\n* * *\n\n  * [Apache](https://www.apache.org/ \"Apache\")/\n  * [Maven](../../../index.html \"Maven\")/\n  * [Ref](../../ \"Ref\")/\n  * [Maven 3.9.7](../ \"Maven 3.9.7\")/\n  * [Maven Model](index.html \"Maven Model\")/\n  * Maven [![](./images/accessories-text-editor.png)](https://github.com/apache/maven/tree/maven-3.9.7/maven-model/target/generated-site/xdoc/maven.xml)\n  * | Last Published: 2024-05-22\n  * Version: 3.9.7\n\n  * Overview\n  * [Introduction](index.html \"Introduction\")\n  * [Javadocs](apidocs/index.html \"Javadocs\")\n  * [Source Xref](xref/index.html \"Source Xref\")\n  * Descriptors Reference\n  * [POM](.",
-        "score": "-2.877264976501465",
-        "source": "tech-docs",
-        "id": "b093ed07-6824-41c6-a4a2-de4ec0b16bd5"
+        "text": "For instance, if\nyou are using a BOM (Bill of Materials) module, the `modelVersion` allows\nMaven to understand how to handle the versions of the dependencies specified\nwithin that BOM. This simplifies the process of managing versions across\nmultiple modules, as you do not need to specify the version for every\ndependency individually.\n\n#### Example of a pom.xml\n\nHere is a basic example of a `pom.xml` file that includes the `modelVersion`:\n\n    \n    \n    <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n    <project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n             xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n        <modelVersion>4.0.0</modelVersion>\n        <groupId>org.example</groupId>\n        <artifactId>demo</artifactId>\n        <version>1.",
+        "score": "4.398603916168213",
+        "source": "web",
+        "id": "d6868b65-91c6-4691-a8ab-779aa626bb89"
       },
       {
-        "text": "# [![](../../images/apache-maven-project.png)](https://www.apache.org/)\n\n# [![](../../images/maven-logo-black-on-white.png)](../.././)\n\n* * *\n\n  * [Apache](https://www.apache.org/)/\n  * [Maven](../../index.html)/\n  * Maven Getting Started Guide [![Edit](../../images/accessories-text-editor.png)](https://github.com/apache/maven-site/tree/master/content/apt/guides/getting-started/index.apt)\n  * | Last Published: 2025-02-07\n  * | [Get Sources](../../scm.html)\n  * [Download](../../download.cgi)\n\n  * [Welcome](../../index.html)\n  * [License](https://www.apache.org/licenses/)\n  * About Maven\n  * [What is Maven?](././what-is-maven.html)\n  * [Features](././maven-features.html)\n  * [Download](././download.html)\n  * [Use](././users/index.html)\n  * [Release Notes](././docs/history.html)\n  * Documentation\n  * [Maven Plugins](./.",
-        "score": "-6.744050979614258",
-        "source": "tech-docs",
-        "id": "a07f78b3-cdf8-45d3-9f61-0976b67005d2"
+        "text": "Child pom.xml\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\">\n\n<modelVersion>4.0.0</modelVersion>\n\n<parent>\n\n<groupId>maven.test1</groupId>\n\n<artifactId>maven-test1-parent</artifactId>\n\n<version>[1.0,99.0)</version>\n\n</parent>\n\n<artifactId>maven-test1-child1</artifactId>\n\n<name>${project.artifactId}</name>\n\n</project>\n\n  \n  \nThe key line here is _line 8_. Here I specify the parent _pom.xml_ version\n**_range_** as _[1.0,99.0)_. This means it will match whatever the parent is\nbetween versions _1.0_ and _99.0_. This is possible to do since [version\n3.2.2](https://maven.apache.org/docs/3.2.2/release-notes.html \"Go to\nhttp://maven.apache.org/docs/3.2.2/release-notes.html\").",
+        "score": "4.153621673583984",
+        "source": "web",
+        "id": "2f996afc-c090-4f2a-8d03-ea5227827391"
       },
       {
-        "text": "0.0.M3.jar!/:2.0.0.M3]         at org.springframework.boot.SpringApplication.run(SpringApplication.java:327) [spring-boot-2.0.0.M3.jar!/:2.0.0.M3]         at org.springframework.boot.SpringApplication.run(SpringApplication.java:1245) [spring-boot-2.0.0.M3.jar!/:2.0.0.M3]         at org.springframework.boot.SpringApplication.run(SpringApplication.java:1233) [spring-boot-2.0.0.M3.jar!/:2.0.0.M3]         at com.lapots.breed.platform.cloud.boot.app.JavaCloudSampleApplication.main(JavaCloudSampleApplication.java:10) [classes!/:0.0.",
-        "score": "-8.421396255493164",
-        "source": "so-posts",
-        "id": "45f9b978-982b-4c15-ab87-bc366a6b357c"
+        "text": "## Key Elements of a POM File\n\n  * **modelVersion** : Indicates the version of the POM model. For example, `4.0.0` is the current version used in most projects.\n  * **groupId** : Defines the unique identifier for the project group. This is typically structured as a reverse domain name.\n  * **artifactId** : Specifies the unique identifier for the project itself.\n  * **version** : Represents the current version of the project, which can include qualifiers like `SNAPSHOT` for ongoing development.\n\n### Example POM Structure\n\nHere\u2019s a basic example of a POM file:\n\n    \n    \n    <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n    <project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n             xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n        <modelVersion>4.0.0</modelVersion>\n        <groupId>org.",
+        "score": "3.4560132026672363",
+        "source": "web",
+        "id": "656e2002-a1b6-41cf-a17e-e25c0fbc70df"
       },
       {
-        "text": "support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1083) ~[spring-context-5.0.0.RC3.jar!/:5.0.0.RC3]         at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:858) ~[spring-context-5.0.0.RC3.jar!/:5.0.0.RC3]         at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:549) ~[spring-context-5.0.0.RC3.jar!/:5.0.0.RC3]         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:122) ~[spring-boot-2.0.0.M3.jar!/:2.0.0.M3]         at org.springframework.",
-        "score": "-8.839133262634277",
-        "source": "so-posts",
-        "id": "d35c6753-0d1b-424f-95c5-c0dfc44a8fea"
+        "text": "This is what the parent/super _pom.xml_ would look like...  \n\n Super pom.xml\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\">\n\n<modelVersion>4.0.0</modelVersion>\n\n<groupId>maven.test1</groupId>\n\n<artifactId>maven-test1-parent</artifactId>\n\n<version>${revision}</version>\n\n<properties>\n\n<revision>42.0</revision>\n\n</properties>\n\n<name>${project.artifactId}</name>\n\n<description>Main POM file for ${project.artifactId}</description>\n\n<packaging>pom</packaging>\n\n<modules>\n\n<module>Child1</module>\n\n</modules>\n\n</project>\n\n  \n  \nThe key lines above are _line 7_ and _line 10_. On _line 7_ , I set the parent\n_pom.xml_ version via the _${revision}_ property.",
+        "score": "3.230741024017334",
+        "source": "web",
+        "id": "1a9fedb2-2b36-407e-95a9-570da5f39a9e"
       },
       {
-        "text": "0.0.RC3.jar!/:5.0.0.RC3]         at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:549) ~[spring-context-5.0.0.RC3.jar!/:5.0.0.RC3]         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:122) ~[spring-boot-2.0.0.M3.jar!/:2.0.0.M3]         at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:750) [spring-boot-2.0.0.M3.jar!/:2.0.0.M3]         at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:386) [spring-boot-2.0.0.M3.",
-        "score": "-8.95765209197998",
-        "source": "so-posts",
-        "id": "d4da02ad-82b6-4e45-99fa-f60cc0a80de9"
+        "text": "This is essential for maintaining the integrity of the build process.\n  * **Features** : Different model versions may support different features or configurations. By adhering to `4.0.0`, you ensure access to the latest features and improvements in Maven.\n\n## Example of a Complete POM\n\nHere\u2019s a complete example of a `pom.xml` file that includes the\n`modelVersion`:\n\n    \n    \n    <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n    <project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n             xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n        <modelVersion>4.0.0</modelVersion>\n        <groupId>org.example</groupId>\n        <artifactId>demo</artifactId>\n        <version>1.0-SNAPSHOT</version>\n        <properties>\n            <arrow.version>9.0.0</arrow.",
+        "score": "2.2803406715393066",
+        "source": "web",
+        "id": "c08526bc-83ba-424e-a52b-df320426d33a"
       }
     ]
   },
@@ -76,34 +76,34 @@
     "explanation": "different options that are not related",
     "context": [
       {
+        "text": "It lets you provide custom behavior when your application boots, to\nreact according to the state of your dependencies.\n\nThe default implementation of the abstract\n`org.springframework.cloud.zookeeper.discovery.watcher.presence.DependencyPresenceOnStartupVerifier`\nclass is the\n`org.springframework.cloud.zookeeper.discovery.watcher.presence.DefaultDependencyPresenceOnStartupVerifier`,\nwhich works in the following way.\n\n  1. If the dependency is marked us `required` and is not in Zookeeper, when your application boots, it throws an exception and shuts down.\n\n  2. If the dependency is not `required`, the `org.springframework.cloud.zookeeper.discovery.watcher.presence.LogMissingDependencyChecker` logs that the dependency is missing at the `WARN` level.\n\nBecause the `DefaultDependencyPresenceOnStartupVerifier` is registered only\nwhen there is no bean of type `DependencyPresenceOnStartupVerifier`, this\nfunctionality can be overridden.\n\n## 7\\. Distributed Configuration with Zookeeper\n\nZookeeper provides a [hierarchical\nnamespace](https://zookeeper.apache.org/doc/current/zookeeperOver.html#sc_dataModelNameSpace)\nthat lets clients store arbitrary data, such as configuration data.",
+        "score": "1.2163918018341064",
+        "source": "web",
+        "id": "01f266a1-8e03-402a-8652-877c3e31baf1"
+      },
+      {
+        "text": "Without this setting, those two parameters do not work.\n\n[Spring Cloud Zookeeper and Service Registry](service-registry.html) [Spring\nCloud Zookeeper Dependency Watcher](dependency-watcher.html)\n\n  * [Spring Cloud Zookeeper](index.html)\n    * [ 4.3.0-SNAPSHOT ](4.3-SNAPSHOT/index.html)\n    * [ 4.3.0-M1 ](4.3/index.html)\n    * [ 4.2.0current ](index.html)\n    * [ 4.1.4-SNAPSHOT ](4.1-SNAPSHOT/index.html)\n    * [ 4.1.3 ](4.1/index.html)\n\n  * Related Spring Documentation \n    * [ Spring Boot ](https://docs.spring.io/spring-boot/)\n    * [ Spring Framework ](https://docs.spring.io/spring-framework/reference/)\n    * __Spring Cloud\n      * [ Spring Cloud Build ](https://docs.spring.io/spring-cloud-build/reference/)\n      * [ Spring Cloud Bus ](https://docs.spring.",
+        "score": "0.04489158093929291",
+        "source": "web",
+        "id": "d77aa49a-1877-4406-aac2-08c67b1ca534"
+      },
+      {
         "text": "tools.checkstyle.checks.imports.AvoidStaticImportCheck\">-->\n        <!--            <property name=\"excludes\"-->\n        <!--                      value=\"io.restassured.RestAssured.*, org.assertj.core.api.Assertions.*, org.junit.jupiter.api.Assertions.*, org.junit.jupiter.api.Assumptions.*, org.junit.Assert.*, org.junit.Assume.*, org.junit.internal.matchers.ThrowableMessageMatcher.*, org.junit.jupiter.api.Assertions.*, org.hamcrest.CoreMatchers.*, org.hamcrest.Matchers.*, org.springframework.boot.configurationprocessor.ConfigurationMetadataMatchers.*, org.springframework.boot.configurationprocessor.TestCompiler.*, org.springframework.boot.test.autoconfigure.AutoConfigurationImportedCondition.*, org.mockito.Mockito.*, org.mockito.BDDMockito.*, org.mockito.ArgumentMatchers.*, org.mockito.Matchers.*, org.springframework.restdocs.headers.HeaderDocumentation.*, org.springframework.restdocs.hypermedia.HypermediaDocumentation.*, org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*, org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.",
         "score": "-2.6098246574401855",
         "source": "github",
         "id": "c7bfc3a5-634a-46a8-8a39-a3ada796051a"
       },
       {
-        "text": "*, org.springframework.restdocs.operation.preprocess.Preprocessors.*, org.springframework.restdocs.payload.PayloadDocumentation.*, org.springframework.restdocs.request.RequestDocumentation.*, org.springframework.restdocs.restassured3.operation.preprocess.RestAssuredPreprocessors.*, org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.*, org.springframework.restdocs.snippet.Attributes.*, org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.*, org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*, org.springframework.test.web.servlet.result.MockMvcResultMatchers.*, org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.*, org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*, org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*, org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo, org.springframework.test.web.client.ExpectedCount.*, org.springframework.test.web.client.match.MockRestRequestMatchers.*, org.springframework.test.web.client.response.MockRestResponseCreators.",
-        "score": "-5.013214111328125",
-        "source": "github",
-        "id": "907713ac-8daa-4b8c-8b4e-28419cfab0e4"
+        "text": "# Spring Cloud Zookeeper\n\nTable of Contents\n\n  * 1\\. Install Zookeeper\n  * 2\\. Service Discovery with Zookeeper\n    * 2.1. Activating\n    * 2.2. Registering with Zookeeper\n    * 2.3. Using the DiscoveryClient\n  * 3\\. Using Spring Cloud Zookeeper with Spring Cloud Netflix Components\n    * 3.1. Spring Cloud LoadBalancer with Zookeeper\n  * 4\\. Spring Cloud Zookeeper and Service Registry\n    * 4.1. Instance Status\n  * 5\\. Zookeeper Dependencies\n    * 5.1. Using the Zookeeper Dependencies\n    * 5.2. Activating Zookeeper Dependencies\n    * 5.3. Setting up Zookeeper Dependencies\n    * 5.4. Configuring Spring Cloud Zookeeper Dependencies\n  * 6\\. Spring Cloud Zookeeper Dependency Watcher\n    * 6.1. Activating\n    * 6.2. Registering a Listener\n    * 6.3. Using the Presence Checker\n  * 7\\.",
+        "score": "-3.031686782836914",
+        "source": "web",
+        "id": "3fb6c6c9-6d73-435c-961c-e96db384e219"
       },
       {
-        "text": "__Discord notifications configuration options__\n| Property name                                | Description                                           | Default value                                                                                                    |\n| -------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.discord.enabled     | Enable Discord notifications                          | true                                                                                                             |\n| spring.boot.admin.notify.discord.webhook-url | The Discord webhook url to send the notifications to. |                                                                                                                  |\n| spring.boot.admin.notify.discord.username    | Optional username.                                    | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.avatar-url  | Optional URL to avatar.                               | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.tts         | If the message is a text to speech message.           | false                                                                                                            |\n| spring.boot.admin.notify.discord.message     | Text to send. SpEL-expressions are supported.",
-        "score": "-5.089235305786133",
-        "source": "github",
-        "id": "188468f3-4093-437f-ac4a-aea44d1cc385"
-      },
-      {
-        "text": "__Discord notifications configuration options__\n| Property name                                | Description                                           | Default value                                                                                                    |\n| -------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.discord.enabled     | Enable Discord notifications                          | true                                                                                                             |\n| spring.boot.admin.notify.discord.webhook-url | The Discord webhook url to send the notifications to. |                                                                                                                  |\n| spring.boot.admin.notify.discord.username    | Optional username.                                    | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.avatar-url  | Optional URL to avatar.                               | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.tts         | If the message is a text to speech message.           | false                                                                                                            |\n| spring.boot.admin.notify.discord.message     | Text to send. SpEL-expressions are supported.",
-        "score": "-5.401156425476074",
-        "source": "github",
-        "id": "44034391-4a1a-4e19-9fb6-4283430b6367"
-      },
-      {
-        "text": "__Telegram notifications configuration options__\n| Property name                                    | Description                                                                                               | Default value                                                                                                                                                        |\n| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.telegram.enabled        | Enable Telegram notifications                                                                             | true                                                                                                                                                                 |\n| spring.boot.admin.notify.telegram.auth-token     | The token identifying und authorizing your Telegram bot (e.g. 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11). |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.chat-id        | Unique identifier for the target chat or username of the target channel                                   |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.disable-notify | If true users will receive a notification with no sound.                                                  | false                                                                                                                                                                |\n| spring.boot.admin.notify.telegram.parse_mode     | The parsing mode for the sent message. Currently, `HTML' and 'Markdown' are supported.",
-        "score": "-6.628933906555176",
-        "source": "github",
-        "id": "02d791db-55d4-4f4b-bf9c-8bc1335ecd2b"
+        "text": "This version introduces a structured\napproach to defining project dependencies, ensuring that your builds are\nconsistent and reliable.\n\n## Project Structure\n\nA typical Maven project structure includes a `pom.xml` file that defines the\nproject\u2019s configuration. Below is an example of a basic `pom.xml`:\n\n    \n    \n    <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n    <project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n             xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n        <modelVersion>4.0.0</modelVersion>\n        <groupId>org.example</groupId>\n        <artifactId>demo</artifactId>\n        <version>1.0-SNAPSHOT</version>\n        <properties>\n            <arrow.version>9.0.0</arrow.version>\n        </properties>\n        <dependencies>\n            <dependency>\n                <groupId>org.apache.",
+        "score": "-4.415839195251465",
+        "source": "web",
+        "id": "bafdd5d7-08d1-446c-b25b-6b6f657cba14"
       }
     ]
   },
@@ -130,34 +130,34 @@
     "explanation": "different options that are not related",
     "context": [
       {
-        "text": "---\nsidebar_custom_props:\n  icon: 'properties'\n---\n\n# Properties\n\n__Spring Boot Admin Client configuration options__\n| Property name                                                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                        | Default value                                                                         |\n| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |\n| spring.boot.admin.client.enabled                                   | Enables the Spring Boot Admin Client.                                                                                                                                                                                                                                                                                                                                                                                              | true                                                                                  |\n| spring.boot.admin.client.url                                       | Comma separated ordered list of URLs of the Spring Boot Admin server to register at. This triggers the AutoConfiguration. **Mandatory**.                                                                                                                                                                                                                                                                                           |                                                                                       |\n| spring.boot.admin.client.api-path                                  | Http-path of registration endpoint at your admin server.                                                                                                                                                                                                                                                                                                                                                                           | \"instances\"                                                                           |\n| spring.boot.admin.client.usernamespring.boot.admin.client.password | Username and password in case the SBA Server api is protected with HTTP Basic authentication.",
-        "score": "-7.172411918640137",
-        "source": "github",
-        "id": "7969db11-65ba-48b0-a075-eb3027406de9"
+        "text": "html)\n        * [Version Properties](./appendix/dependency-versions/properties.html)\n\nSearch\n\n[ Edit this Page ](https://github.com/spring-projects/spring-\nboot/blob/v3.4.2/spring-boot-project/spring-boot-tools/spring-boot-maven-\nplugin/src/docs/antora/modules/maven-plugin/pages/using.adoc) [ GitHub Project\n](https://github.com/spring-projects/spring-boot \"GitHub\") [ Stack Overflow\n](https://stackoverflow.com/tags/spring-boot)\n\n  * [Spring Boot](./index.html)\n  * [Build Tool Plugins](./build-tool-plugin/index.html)\n  * [Maven Plugin](index.html)\n  * [Using the Plugin](using.html)\n\n# Using the Plugin\n\nMaven users can inherit from the `spring-boot-starter-parent` project to\nobtain sensible defaults. The parent project provides the following features:\n\n  * Java 17 as the default compiler level.\n\n  * UTF-8 source encoding.\n\n  * Compilation with `-parameters`.\n\n  * A dependency management section, inherited from the `spring-boot-dependencies` POM, that manages the versions of common dependencies.",
+        "score": "3.2411653995513916",
+        "source": "web",
+        "id": "56123056-5bd2-413c-83b1-985471521f11"
       },
       {
-        "text": "__Telegram notifications configuration options__\n| Property name                                    | Description                                                                                               | Default value                                                                                                                                                        |\n| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.telegram.enabled        | Enable Telegram notifications                                                                             | true                                                                                                                                                                 |\n| spring.boot.admin.notify.telegram.auth-token     | The token identifying und authorizing your Telegram bot (e.g. 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11). |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.chat-id        | Unique identifier for the target chat or username of the target channel                                   |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.disable-notify | If true users will receive a notification with no sound.                                                  | false                                                                                                                                                                |\n| spring.boot.admin.notify.telegram.parse_mode     | The parsing mode for the sent message. Currently, `HTML' and 'Markdown' are supported.",
-        "score": "-7.277362823486328",
-        "source": "github",
-        "id": "2b3a75af-aec5-4d41-9194-4652dc8b7a09"
+        "text": "---|---  \n  \n__ |  The `spring-boot-starter-parent` sets the `maven.compiler.release` property, which restricts the `--add-exports`, `--add-reads`, and `--patch-module` options [if they modify system modules](https://openjdk.org/jeps/247). In case you need to use those options, unset `maven.compiler.release`:\n    \n    \n    <maven.compiler.release></maven.compiler.release>\n\nand then configure the source and the target options instead:\n\n    \n    \n    <maven.compiler.source>${java.version}</maven.compiler.source>\n    <maven.compiler.target>${java.version}</maven.compiler.target>  \n  \n---|---  \n  \n## Inheriting the Starter Parent POM\n\nTo configure your project to inherit from the `spring-boot-starter-parent`,\nset the `parent` as follows:\n\n    \n    \n    <!-- Inherit defaults from Spring Boot -->\n    <parent>\n    \t<groupId>org.springframework.boot</groupId>\n    \t<artifactId>spring-boot-starter-parent</artifactId>\n    \t<version>3.4.2</version>\n    </parent>\n\n__ |  You should need to specify only the Spring Boot version number on this dependency.",
+        "score": "2.320021390914917",
+        "source": "web",
+        "id": "3a542a64-609e-413f-adbe-cba331d19db6"
       },
       {
-        "text": "__Telegram notifications configuration options__\n| Property name                                    | Description                                                                                               | Default value                                                                                                                                                        |\n| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.telegram.enabled        | Enable Telegram notifications                                                                             | true                                                                                                                                                                 |\n| spring.boot.admin.notify.telegram.auth-token     | The token identifying und authorizing your Telegram bot (e.g. 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11). |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.chat-id        | Unique identifier for the target chat or username of the target channel                                   |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.disable-notify | If true users will receive a notification with no sound.                                                  | false                                                                                                                                                                |\n| spring.boot.admin.notify.telegram.parse_mode     | The parsing mode for the sent message. Currently, `HTML' and 'Markdown' are supported.",
-        "score": "-7.570896148681641",
-        "source": "github",
-        "id": "02d791db-55d4-4f4b-bf9c-8bc1335ecd2b"
+        "text": "5.0-M1 ](./3.5/maven-plugin/using.html)\n\nSnapshot\n\n    * [ 3.5.0-SNAPSHOT ](./3.5-SNAPSHOT/maven-plugin/using.html)\n    * [ 3.4.3-SNAPSHOT ](./3.4-SNAPSHOT/maven-plugin/using.html)\n    * [ 3.3.9-SNAPSHOT ](./3.3-SNAPSHOT/maven-plugin/using.html)\n\n  * Related Spring Documentation \n    * [ Spring Boot ](https://docs.spring.io/spring-boot/)\n    * [ Spring Framework ](https://docs.spring.io/spring-framework/reference/)\n    * __Spring Cloud\n      * [ Spring Cloud Build ](https://docs.spring.io/spring-cloud-build/reference/)\n      * [ Spring Cloud Bus ](https://docs.spring.io/spring-cloud-bus/reference/)\n      * [ Spring Cloud Circuit Breaker ](https://docs.spring.io/spring-cloud-circuitbreaker/reference/)\n      * [ Spring Cloud Commons ](https://docs.spring.",
+        "score": "1.0044554471969604",
+        "source": "web",
+        "id": "7d4ed625-e20c-4116-b28f-edd9c514ded7"
       },
       {
-        "text": "__Hipchat notifications configuration options__\n| Property name                                   | Description                                                                                                               | Default value                                                                                                                                                        |\n| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.hipchat.enabled        | Enable Hipchat notifications                                                                                              | true                                                                                                                                                                 |\n| spring.boot.admin.notify.hipchat.ignore-changes | Comma-delimited list of status changes to be ignored. Format: \"&lt;from-status&gt;:&lt;to-status&gt;\". Wildcards allowed.",
-        "score": "-8.19754409790039",
-        "source": "github",
-        "id": "5255b850-26aa-4cf9-8097-3b383cf929cc"
+        "text": "/how-to/deployment/installing.html)\n      * [Docker Compose](./how-to/docker-compose.html)\n    * [Build Tool Plugins](./build-tool-plugin/index.html)\n      * [Maven Plugin](index.html)\n        * [Getting Started](getting-started.html)\n        * [Using the Plugin](using.html)\n        * [Goals](goals.html)\n        * [Packaging Executable Archives](packaging.html)\n        * [Packaging OCI Images](build-image.html)\n        * [Running your Application with Maven](run.html)\n        * [Ahead-of-Time Processing](aot.html)\n        * [Running Integration Tests](integration-tests.html)\n        * [Integrating with Actuator](build-info.html)\n        * [Help Information](help.html)\n      * [Gradle Plugin](./gradle-plugin/index.html)\n        * [Getting Started](./gradle-plugin/getting-started.html)\n        * [Managing Dependencies](./gradle-plugin/managing-dependencies.html)\n        * [Packaging Executable Archives](./gradle-plugin/packaging.",
+        "score": "-2.6549911499023438",
+        "source": "web",
+        "id": "e91e0df8-5360-495d-9de5-a86e57ac2f9c"
       },
       {
-        "text": "---\nsidebar_custom_props:\n  icon: 'notifications'\n---\n\n## Notification\n\n### Hipchat Notifications\n\nTo enable [Hipchat](https://www.hipchat.com/) notifications you need to create an API token on your Hipchat account and set the appropriate configuration properties.\n\n__Hipchat notifications configuration options__\n| Property name                                   | Description                                                                                                               | Default value                                                                                                                                                        |\n| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.hipchat.enabled        | Enable Hipchat notifications                                                                                              | true                                                                                                                                                                 |\n| spring.boot.admin.notify.hipchat.ignore-changes | Comma-delimited list of status changes to be ignored. Format: \"&lt;from-status&gt;:&lt;to-status&gt;\". Wildcards allowed.",
-        "score": "-8.381092071533203",
-        "source": "github",
-        "id": "3082ebd5-5686-40fc-8131-ca0db4caf180"
+        "text": "Child pom.xml\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\">\n\n<modelVersion>4.0.0</modelVersion>\n\n<parent>\n\n<groupId>maven.test1</groupId>\n\n<artifactId>maven-test1-parent</artifactId>\n\n<version>[1.0,99.0)</version>\n\n</parent>\n\n<artifactId>maven-test1-child1</artifactId>\n\n<name>${project.artifactId}</name>\n\n</project>\n\n  \n  \nThe key line here is _line 8_. Here I specify the parent _pom.xml_ version\n**_range_** as _[1.0,99.0)_. This means it will match whatever the parent is\nbetween versions _1.0_ and _99.0_. This is possible to do since [version\n3.2.2](https://maven.apache.org/docs/3.2.2/release-notes.html \"Go to\nhttp://maven.apache.org/docs/3.2.2/release-notes.html\").",
+        "score": "-3.7313127517700195",
+        "source": "web",
+        "id": "2f996afc-c090-4f2a-8d03-ea5227827391"
       }
     ]
   },
@@ -184,6 +184,18 @@
     "explanation": "different options that are not related",
     "context": [
       {
+        "text": "Without this setting, those two parameters do not work.\n\n[Spring Cloud Zookeeper and Service Registry](service-registry.html) [Spring\nCloud Zookeeper Dependency Watcher](dependency-watcher.html)\n\n  * [Spring Cloud Zookeeper](index.html)\n    * [ 4.3.0-SNAPSHOT ](4.3-SNAPSHOT/index.html)\n    * [ 4.3.0-M1 ](4.3/index.html)\n    * [ 4.2.0current ](index.html)\n    * [ 4.1.4-SNAPSHOT ](4.1-SNAPSHOT/index.html)\n    * [ 4.1.3 ](4.1/index.html)\n\n  * Related Spring Documentation \n    * [ Spring Boot ](https://docs.spring.io/spring-boot/)\n    * [ Spring Framework ](https://docs.spring.io/spring-framework/reference/)\n    * __Spring Cloud\n      * [ Spring Cloud Build ](https://docs.spring.io/spring-cloud-build/reference/)\n      * [ Spring Cloud Bus ](https://docs.spring.",
+        "score": "2.4701695442199707",
+        "source": "web",
+        "id": "d77aa49a-1877-4406-aac2-08c67b1ca534"
+      },
+      {
+        "text": "spring.io/spring-cloud-stream/reference/)\n      * [ Spring Cloud Task ](https://docs.spring.io/spring-cloud-task/reference/)\n      * [ Spring Cloud Vault ](https://docs.spring.io/spring-cloud-vault/reference/)\n      * [ Spring Cloud Zookeeper ](https://docs.spring.io/spring-cloud-zookeeper/reference/)\n    * __Spring Data\n      * [ Spring Data Cassandra ](https://docs.spring.io/spring-data/cassandra/reference/)\n      * [ Spring Data Commons ](https://docs.spring.io/spring-data/commons/reference/)\n      * [ Spring Data Couchbase ](https://docs.spring.io/spring-data/couchbase/reference/)\n      * [ Spring Data Elasticsearch ](https://docs.spring.io/spring-data/elasticsearch/reference/)\n      * [ Spring Data JPA ](https://docs.spring.io/spring-data/jpa/reference/)\n      * [ Spring Data KeyValue ](https://docs.spring.io/spring-data/keyvalue/reference/)\n      * [ Spring Data LDAP ](https://docs.spring.io/spring-data/ldap/reference/)\n      * [ Spring Data MongoDB ](https://docs.spring.",
+        "score": "-2.6392908096313477",
+        "source": "web",
+        "id": "4027c68e-b698-4fdf-b5b5-26f154e80051"
+      },
+      {
         "text": "__Discord notifications configuration options__\n| Property name                                | Description                                           | Default value                                                                                                    |\n| -------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.discord.enabled     | Enable Discord notifications                          | true                                                                                                             |\n| spring.boot.admin.notify.discord.webhook-url | The Discord webhook url to send the notifications to. |                                                                                                                  |\n| spring.boot.admin.notify.discord.username    | Optional username.                                    | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.avatar-url  | Optional URL to avatar.                               | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.tts         | If the message is a text to speech message.           | false                                                                                                            |\n| spring.boot.admin.notify.discord.message     | Text to send. SpEL-expressions are supported.",
         "score": "-2.6404452323913574",
         "source": "github",
@@ -200,18 +212,6 @@
         "score": "-3.2279293537139893",
         "source": "github",
         "id": "69a371ee-c280-452f-a501-1012cd320b48"
-      },
-      {
-        "text": "tools.checkstyle.checks.imports.AvoidStaticImportCheck\">-->\n        <!--            <property name=\"excludes\"-->\n        <!--                      value=\"io.restassured.RestAssured.*, org.assertj.core.api.Assertions.*, org.junit.jupiter.api.Assertions.*, org.junit.jupiter.api.Assumptions.*, org.junit.Assert.*, org.junit.Assume.*, org.junit.internal.matchers.ThrowableMessageMatcher.*, org.junit.jupiter.api.Assertions.*, org.hamcrest.CoreMatchers.*, org.hamcrest.Matchers.*, org.springframework.boot.configurationprocessor.ConfigurationMetadataMatchers.*, org.springframework.boot.configurationprocessor.TestCompiler.*, org.springframework.boot.test.autoconfigure.AutoConfigurationImportedCondition.*, org.mockito.Mockito.*, org.mockito.BDDMockito.*, org.mockito.ArgumentMatchers.*, org.mockito.Matchers.*, org.springframework.restdocs.headers.HeaderDocumentation.*, org.springframework.restdocs.hypermedia.HypermediaDocumentation.*, org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*, org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.",
-        "score": "-3.562936782836914",
-        "source": "github",
-        "id": "c7bfc3a5-634a-46a8-8a39-a3ada796051a"
-      },
-      {
-        "text": "__Telegram notifications configuration options__\n| Property name                                    | Description                                                                                               | Default value                                                                                                                                                        |\n| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.telegram.enabled        | Enable Telegram notifications                                                                             | true                                                                                                                                                                 |\n| spring.boot.admin.notify.telegram.auth-token     | The token identifying und authorizing your Telegram bot (e.g. 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11). |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.chat-id        | Unique identifier for the target chat or username of the target channel                                   |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.disable-notify | If true users will receive a notification with no sound.                                                  | false                                                                                                                                                                |\n| spring.boot.admin.notify.telegram.parse_mode     | The parsing mode for the sent message. Currently, `HTML' and 'Markdown' are supported.",
-        "score": "-4.22077751159668",
-        "source": "github",
-        "id": "2b3a75af-aec5-4d41-9194-4652dc8b7a09"
       }
     ]
   },
@@ -238,304 +238,34 @@
     "explanation": "different modules but inherit groupID from parent POM",
     "context": [
       {
-        "text": "#\nspring.cloud.consul.enabled=false\nspring.cloud.zookeeper.enabled=false\nspring.cloud.discovery.enabled=false\n\nspring.datasource.url = jdbc:h2:mem:~/apolloportaldb;mode=mysql;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;BUILTIN_ALIAS_OVERRIDE=TRUE;DATABASE_TO_UPPER=FALSE\n\nspring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl\nspring.jpa.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.show_sql=false\nspring.jpa.properties.hibernate.metadata_builder_contributor=com.ctrip.framework.apollo.common.jpa.SqlFunctionsMetadataBuilderContributor\nspring.jpa.defer-datasource-initialization=true\n\nspring.h2.console.enabled = true\nspring.h2.console.settings.web-allow-others=true\n\nspring.session.store-type=none\nspring.main.allow-bean-definition-overriding=true",
-        "score": "-4.877941131591797",
-        "source": "github",
-        "id": "4466d0d6-6f28-4687-98f0-4e9a7c3730ae"
+        "text": "Child pom.xml\n\n<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\">\n\n<modelVersion>4.0.0</modelVersion>\n\n<parent>\n\n<groupId>maven.test1</groupId>\n\n<artifactId>maven-test1-parent</artifactId>\n\n<version>[1.0,99.0)</version>\n\n</parent>\n\n<artifactId>maven-test1-child1</artifactId>\n\n<name>${project.artifactId}</name>\n\n</project>\n\n  \n  \nThe key line here is _line 8_. Here I specify the parent _pom.xml_ version\n**_range_** as _[1.0,99.0)_. This means it will match whatever the parent is\nbetween versions _1.0_ and _99.0_. This is possible to do since [version\n3.2.2](https://maven.apache.org/docs/3.2.2/release-notes.html \"Go to\nhttp://maven.apache.org/docs/3.2.2/release-notes.html\").",
+        "score": "-1.036571979522705",
+        "source": "web",
+        "id": "2f996afc-c090-4f2a-8d03-ea5227827391"
       },
       {
-        "text": "#\nspring.cloud.consul.enabled=false\nspring.cloud.zookeeper.enabled=false\nspring.cloud.discovery.enabled=false\n\nspring.datasource.url = jdbc:h2:mem:~/apolloconfigdb;mode=mysql;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;BUILTIN_ALIAS_OVERRIDE=TRUE;DATABASE_TO_UPPER=FALSE\n\nspring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl\nspring.jpa.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.show_sql=false\nspring.jpa.properties.hibernate.metadata_builder_contributor=com.ctrip.framework.apollo.common.jpa.SqlFunctionsMetadataBuilderContributor\nspring.jpa.defer-datasource-initialization=true\n\nspring.h2.console.enabled = true\nspring.h2.console.settings.web-allow-others=true\n\nspring.main.allow-bean-definition-overriding=true",
-        "score": "-5.691000938415527",
-        "source": "github",
-        "id": "39dbc6e6-75d0-4641-8dfc-fbcb7da5fc3d"
+        "text": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\r\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n    xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n     \r\n      <!--The identifier of the parent POM-->\r\n      <parent>\r\n        <groupId>com.howtodoinjava.demo</groupId>\r\n        <artifactId>MavenExamples</artifactId>\r\n        <version>0.0.1-SNAPSHOT</version>\r\n        <relativePath>../baseapp/pom.xml</relativePath>\r\n      </parent>\r\n     \r\n      <modelVersion>4.0.0</modelVersion>\r\n      <artifactId>MavenExamples</artifactId>\r\n      <name>MavenExamples Child POM</name>\r\n      <packaging>jar</packaging>\r\n     \r\n    </project>\n\n## 4\\. Demo\n\nLet's learn to create maven projects with the parent-child relationships.\n\n### 4.1. Create Parent Project\n\nProject creation wizard.\n\n!",
+        "score": "-1.106938123703003",
+        "source": "web",
+        "id": "a24911e7-db02-4f37-abaa-63bc5e7b51c6"
       },
       {
-        "text": "[![Maven Model](../../../images/apache-maven-project.png)](../../../)\n\n[![](../../../images/maven-logo-black-on-white.png)](../../../)\n\n* * *\n\n  * [Apache](https://www.apache.org/ \"Apache\")/\n  * [Maven](../../../index.html \"Maven\")/\n  * [Ref](../../ \"Ref\")/\n  * [Maven 3.9.7](../ \"Maven 3.9.7\")/\n  * [Maven Model](index.html \"Maven Model\")/\n  * Maven [![](./images/accessories-text-editor.png)](https://github.com/apache/maven/tree/maven-3.9.7/maven-model/target/generated-site/xdoc/maven.xml)\n  * | Last Published: 2024-05-22\n  * Version: 3.9.7\n\n  * Overview\n  * [Introduction](index.html \"Introduction\")\n  * [Javadocs](apidocs/index.html \"Javadocs\")\n  * [Source Xref](xref/index.html \"Source Xref\")\n  * Descriptors Reference\n  * [POM](.",
-        "score": "-6.423945426940918",
-        "source": "tech-docs",
-        "id": "b093ed07-6824-41c6-a4a2-de4ec0b16bd5"
+        "text": "---|---  \n  \n__ |  The `spring-boot-starter-parent` sets the `maven.compiler.release` property, which restricts the `--add-exports`, `--add-reads`, and `--patch-module` options [if they modify system modules](https://openjdk.org/jeps/247). In case you need to use those options, unset `maven.compiler.release`:\n    \n    \n    <maven.compiler.release></maven.compiler.release>\n\nand then configure the source and the target options instead:\n\n    \n    \n    <maven.compiler.source>${java.version}</maven.compiler.source>\n    <maven.compiler.target>${java.version}</maven.compiler.target>  \n  \n---|---  \n  \n## Inheriting the Starter Parent POM\n\nTo configure your project to inherit from the `spring-boot-starter-parent`,\nset the `parent` as follows:\n\n    \n    \n    <!-- Inherit defaults from Spring Boot -->\n    <parent>\n    \t<groupId>org.springframework.boot</groupId>\n    \t<artifactId>spring-boot-starter-parent</artifactId>\n    \t<version>3.4.2</version>\n    </parent>\n\n__ |  You should need to specify only the Spring Boot version number on this dependency.",
+        "score": "-2.074690818786621",
+        "source": "web",
+        "id": "3a542a64-609e-413f-adbe-cba331d19db6"
       },
       {
-        "text": "# [![](../../images/apache-maven-project.png)](https://www.apache.org/)\n\n# [![](../../images/maven-logo-black-on-white.png)](../.././)\n\n* * *\n\n  * [Apache](https://www.apache.org/)/\n  * [Maven](../../index.html)/\n  * Maven Getting Started Guide [![Edit](../../images/accessories-text-editor.png)](https://github.com/apache/maven-site/tree/master/content/apt/guides/getting-started/index.apt)\n  * | Last Published: 2025-02-07\n  * | [Get Sources](../../scm.html)\n  * [Download](../../download.cgi)\n\n  * [Welcome](../../index.html)\n  * [License](https://www.apache.org/licenses/)\n  * About Maven\n  * [What is Maven?](././what-is-maven.html)\n  * [Features](././maven-features.html)\n  * [Download](././download.html)\n  * [Use](././users/index.html)\n  * [Release Notes](././docs/history.html)\n  * Documentation\n  * [Maven Plugins](./.",
-        "score": "-6.7494306564331055",
-        "source": "tech-docs",
-        "id": "a07f78b3-cdf8-45d3-9f61-0976b67005d2"
+        "text": "w3.org/2001/XMLSchema-instance\"\r\n      xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd;\r\n      <modelVersion>4.0.0</modelVersion>\r\n     \r\n      <groupId>com.howtodoinjava.demo</groupId>\r\n      <artifactId>MavenExamples</artifactId>\r\n      <version>0.0.1-SNAPSHOT</version>\r\n      <packaging>pom</packaging>\r\n     \r\n      <name>MavenExamples Parent</name>\r\n      <url>http://maven.apache.org</url>\r\n     \r\n      <properties>\r\n        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\r\n        <junit.version>3.8.1</junit.version>\r\n        <spring.version>4.3.5.RELEASE</spring.version>\r\n      </properties>\r\n     \r\n      <dependencies>\r\n       \r\n        <dependency>\r\n          <groupId>junit</groupId>\r\n          <artifactId>junit</artifactId>\r\n          <version>${junit.",
+        "score": "-3.3901524543762207",
+        "source": "web",
+        "id": "0624c07d-5c5e-4f32-8536-33ff0e5d5978"
       },
       {
-        "text": "6.3.jar --------------------------------------------------- Exception in thread \"main\" java.lang.AssertionError     at jdk.compiler/com.sun.tools.javac.util.Assert.error(Assert.java:155)     at jdk.compiler/com.sun.tools.javac.util.Assert.check(Assert.java:46)     at jdk.compiler/com.sun.tools.javac.comp.Modules.enter(Modules.java:247)     at jdk.compiler/com.sun.tools.javac.main.JavaCompiler.readSourceFile(JavaCompiler.java:837)     at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment$ImplicitCompleter.complete(JavacProcessingEnvironment.java:1529)     at jdk.compiler/com.sun.tools.javac.code.Symbol.complete(Symbol.java:642)     at jdk.compiler/com.",
-        "score": "-9.2868070602417",
-        "source": "so-posts",
-        "id": "b23f4c24-df34-49db-853a-c6519fbb9558"
-      }
-    ]
-  },
-  {
-    "dependency_category": "value-equality",
-    "index": 5,
-    "link_str": "apollo::::apollo-audit/apollo-audit-impl/pom.xml::::project::::version::::version:${revision} <-> apollo::::apollo-audit/apollo-audit-spring-boot-starter/pom.xml::::project::::version::::version:${revision}",
-    "project": "apollo",
-    "option_name": "project.version",
-    "option_value": "version:${revision}",
-    "option_type": "ConfigType.VERSION_NUMBER",
-    "option_file": "apollo-audit/apollo-audit-impl/pom.xml",
-    "option_technology": "maven",
-    "dependent_option_name": "project.version",
-    "dependent_option_value": "version:${revision}",
-    "dependent_option_type": "ConfigType.VERSION_NUMBER",
-    "dependent_option_file": "apollo-audit/apollo-audit-spring-boot-starter/pom.xml",
-    "dependent_option_technology": "maven",
-    "config_type": "correct",
-    "rating": "Borderline",
-    "final_rating": true,
-    "final_category": "Multi-Maven-Modules",
-    "sub_category": "Maven Properties",
-    "explanation": "child POM inherit from parent POM, intended to be consistent",
-    "context": [
-      {
-        "text": "3.2</spring-cloud-alibaba.version>\n        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\n        <maven.compiler.source>17</maven.compiler.source>\n        <maven.compiler.target>17</maven.compiler.target>\n        <spring-boot-admin.version>3.4.1</spring-boot-admin.version>\n        <spring.authorization.version>1.4.1</spring.authorization.version>\n        <screw.version>0.0.3</screw.version>\n        <captcha.version>2.2.4</captcha.version>\n        <aws.version>1.12.675</aws.version>\n        <velocity.version>2.4</velocity.version>\n        <velocity.tool.version>3.1</velocity.tool.version>\n        <configuration.version>1.10</configuration.version>\n        <jasypt.version>3.0.",
-        "score": "-2.6694583892822266",
-        "source": "github",
-        "id": "8f34d93d-30ca-406b-93c4-0abdab371e41"
-      },
-      {
-        "text": "version>12.0.16</jetty.version>\n\n        <!-- plugin versions -->\n        <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>\n        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>\n        <versions-maven-plugin.version>2.18.0\n        </versions-maven-plugin.version> <!-- because of https://github.com/mojohaus/versions/issues/855 -->\n        <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>\n        <maven-site-plugin.version>3.21.0</maven-site-plugin.version>\n        <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>\n        <maven-deploy-plugin.version>3.1.3</maven-deploy-plugin.version>\n        <maven-enforcer-plugin.version>3.5.",
-        "score": "-3.11918306350708",
-        "source": "github",
-        "id": "34409142-075e-4136-a745-dc3930806bb9"
-      },
-      {
-        "text": "version>\n\t\t<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>\n\t\t<maven-install-plugin.version>2.5.2</maven-install-plugin.version>\n\t\t<maven-jacoco-plugin.version>0.8.8</maven-jacoco-plugin.version>\n\t\t<maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>\n\t\t<maven-javadoc-plugin.version>3.4.0</maven-javadoc-plugin.version>\n\t\t<maven-war-plugin.version>3.3.2</maven-war-plugin.version>\n\t\t<maven-source-plugin.version>3.2.1</maven-source-plugin.version>\n\t\t<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.",
-        "score": "-4.383607864379883",
-        "source": "github",
-        "id": "c832f593-2184-4153-bec5-c9b2b0ed41d3"
-      },
-      {
-        "text": "version>3.5.0</maven-enforcer-plugin.version>\n        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>\n        <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>\n        <maven-install-plugin.version>3.1.3</maven-install-plugin.version>\n        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>\n        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>\n        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>\n        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>\n        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>\n        <maven-gpg-plugin.version>3.2.",
-        "score": "-4.393520832061768",
-        "source": "github",
-        "id": "095f2eae-0da0-4807-854d-beee1e4c1e56"
-      },
-      {
-        "text": "host>http://192.168.3.101:2375</docker.host>\n        <docker.maven.plugin.version>0.40.2</docker.maven.plugin.version>\n        <pagehelper-starter.version>1.4.5</pagehelper-starter.version>\n        <pagehelper.version>5.3.2</pagehelper.version>\n        <druid.version>1.2.14</druid.version>\n        <hutool.version>5.8.9</hutool.version>\n        <springfox-swagger.version>3.0.0</springfox-swagger.version>\n        <swagger-models.version>1.6.0</swagger-models.version>\n        <swagger-annotations.version>1.6.0</swagger-annotations.version>\n        <mybatis-generator.version>1.4.1</mybatis-generator.version>\n        <mybatis.version>3.5.10</mybatis.",
-        "score": "-6.3683037757873535",
-        "source": "github",
-        "id": "bf050db9-78b6-4111-898c-d2c14e1e0bd3"
-      }
-    ]
-  },
-  {
-    "dependency_category": "value-equality",
-    "index": 6,
-    "link_str": "apollo::::apollo-audit/apollo-audit-impl/pom.xml::::project::::parent_apollo-audit::::groupId::::com.ctrip.framework.apollo <-> apollo::::apollo-biz/pom.xml::::project::::dependencies::::dependency_apollo-common::::groupId::::com.ctrip.framework.apollo",
-    "project": "apollo",
-    "option_name": "project.parent_apollo-audit.groupId",
-    "option_value": "com.ctrip.framework.apollo",
-    "option_type": "ConfigType.NAME",
-    "option_file": "apollo-audit/apollo-audit-impl/pom.xml",
-    "option_technology": "maven",
-    "dependent_option_name": "project.dependencies.dependency_apollo-common.groupId",
-    "dependent_option_value": "com.ctrip.framework.apollo",
-    "dependent_option_type": "ConfigType.NAME",
-    "dependent_option_file": "apollo-biz/pom.xml",
-    "dependent_option_technology": "maven",
-    "config_type": "correct",
-    "rating": "Borderline",
-    "final_rating": true,
-    "final_category": "Multi-Maven-Modules",
-    "sub_category": "Project Inheritance",
-    "explanation": "modules do not specify their own groupID but inherit it from the parent module, whenever the module is used (inheritance, dependency, etc) the groupID has to be the same",
-    "context": [
-      {
-        "text": "tools.checkstyle.checks.imports.AvoidStaticImportCheck\">-->\n        <!--            <property name=\"excludes\"-->\n        <!--                      value=\"io.restassured.RestAssured.*, org.assertj.core.api.Assertions.*, org.junit.jupiter.api.Assertions.*, org.junit.jupiter.api.Assumptions.*, org.junit.Assert.*, org.junit.Assume.*, org.junit.internal.matchers.ThrowableMessageMatcher.*, org.junit.jupiter.api.Assertions.*, org.hamcrest.CoreMatchers.*, org.hamcrest.Matchers.*, org.springframework.boot.configurationprocessor.ConfigurationMetadataMatchers.*, org.springframework.boot.configurationprocessor.TestCompiler.*, org.springframework.boot.test.autoconfigure.AutoConfigurationImportedCondition.*, org.mockito.Mockito.*, org.mockito.BDDMockito.*, org.mockito.ArgumentMatchers.*, org.mockito.Matchers.*, org.springframework.restdocs.headers.HeaderDocumentation.*, org.springframework.restdocs.hypermedia.HypermediaDocumentation.*, org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*, org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.",
-        "score": "-9.804974555969238",
-        "source": "github",
-        "id": "c7bfc3a5-634a-46a8-8a39-a3ada796051a"
-      },
-      {
-        "text": "*, org.springframework.restdocs.operation.preprocess.Preprocessors.*, org.springframework.restdocs.payload.PayloadDocumentation.*, org.springframework.restdocs.request.RequestDocumentation.*, org.springframework.restdocs.restassured3.operation.preprocess.RestAssuredPreprocessors.*, org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.*, org.springframework.restdocs.snippet.Attributes.*, org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.*, org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*, org.springframework.test.web.servlet.result.MockMvcResultMatchers.*, org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.*, org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*, org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*, org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo, org.springframework.test.web.client.ExpectedCount.*, org.springframework.test.web.client.match.MockRestRequestMatchers.*, org.springframework.test.web.client.response.MockRestResponseCreators.",
-        "score": "-10.750648498535156",
-        "source": "github",
-        "id": "907713ac-8daa-4b8c-8b4e-28419cfab0e4"
-      },
-      {
-        "text": "__Discord notifications configuration options__\n| Property name                                | Description                                           | Default value                                                                                                    |\n| -------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.discord.enabled     | Enable Discord notifications                          | true                                                                                                             |\n| spring.boot.admin.notify.discord.webhook-url | The Discord webhook url to send the notifications to. |                                                                                                                  |\n| spring.boot.admin.notify.discord.username    | Optional username.                                    | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.avatar-url  | Optional URL to avatar.                               | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.tts         | If the message is a text to speech message.           | false                                                                                                            |\n| spring.boot.admin.notify.discord.message     | Text to send. SpEL-expressions are supported.",
-        "score": "-10.951927185058594",
-        "source": "github",
-        "id": "188468f3-4093-437f-ac4a-aea44d1cc385"
-      },
-      {
-        "text": "__Discord notifications configuration options__\n| Property name                                | Description                                           | Default value                                                                                                    |\n| -------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.discord.enabled     | Enable Discord notifications                          | true                                                                                                             |\n| spring.boot.admin.notify.discord.webhook-url | The Discord webhook url to send the notifications to. |                                                                                                                  |\n| spring.boot.admin.notify.discord.username    | Optional username.                                    | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.avatar-url  | Optional URL to avatar.                               | _Default set in Discord_                                                                                         |\n| spring.boot.admin.notify.discord.tts         | If the message is a text to speech message.           | false                                                                                                            |\n| spring.boot.admin.notify.discord.message     | Text to send. SpEL-expressions are supported.",
-        "score": "-11.047513008117676",
-        "source": "github",
-        "id": "44034391-4a1a-4e19-9fb6-4283430b6367"
-      },
-      {
-        "text": "__Telegram notifications configuration options__\n| Property name                                    | Description                                                                                               | Default value                                                                                                                                                        |\n| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| spring.boot.admin.notify.telegram.enabled        | Enable Telegram notifications                                                                             | true                                                                                                                                                                 |\n| spring.boot.admin.notify.telegram.auth-token     | The token identifying und authorizing your Telegram bot (e.g. 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11). |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.chat-id        | Unique identifier for the target chat or username of the target channel                                   |                                                                                                                                                                      |\n| spring.boot.admin.notify.telegram.disable-notify | If true users will receive a notification with no sound.                                                  | false                                                                                                                                                                |\n| spring.boot.admin.notify.telegram.parse_mode     | The parsing mode for the sent message. Currently, `HTML' and 'Markdown' are supported.",
-        "score": "-11.327821731567383",
-        "source": "github",
-        "id": "2b3a75af-aec5-4d41-9194-4652dc8b7a09"
-      }
-    ]
-  },
-  {
-    "dependency_category": "value-equality",
-    "index": 7,
-    "link_str": "apollo::::apollo-configservice/pom.xml::::project::::parent_apollo::::groupId::::com.ctrip.framework.apollo <-> apollo::::pom.xml::::project::::groupId::::com.ctrip.framework.apollo",
-    "project": "apollo",
-    "option_name": "project.parent_apollo.groupId",
-    "option_value": "com.ctrip.framework.apollo",
-    "option_type": "ConfigType.NAME",
-    "option_file": "apollo-configservice/pom.xml",
-    "option_technology": "maven",
-    "dependent_option_name": "project.groupId",
-    "dependent_option_value": "com.ctrip.framework.apollo",
-    "dependent_option_type": "ConfigType.NAME",
-    "dependent_option_file": "pom.xml",
-    "dependent_option_technology": "maven",
-    "config_type": "correct",
-    "rating": "Borderline",
-    "final_rating": true,
-    "final_category": "Multi-Maven-Modules",
-    "sub_category": "Project Inheritance",
-    "explanation": "sub modules specifies groupId of parent module",
-    "context": [
-      {
-        "text": "[![Maven Core](../../../images/apache-maven-project.png)](../../../)\n\n[![](../../../images/maven-logo-black-on-white.png)](../../../)\n\n* * *\n\n  * [Apache](https://www.apache.org/ \"Apache\")/\n  * [Maven](../../../index.html \"Maven\")/\n  * [Ref](../../ \"Ref\")/\n  * [Maven 3.9.7](../ \"Maven 3.9.7\")/\n  * [Maven Core](index.html \"Maven Core\")/\n  * MavenToolchains [![](./images/accessories-text-editor.png)](https://github.com/apache/maven/tree/maven-3.9.7/maven-core/target/generated-site/xdoc/toolchains.xml)\n  * | Last Published: 2024-05-22\n  * Version: 3.9.7\n\n  * Overview\n  * [Introduction](index.html \"Introduction\")\n  * [Javadocs](apidocs/index.html \"Javadocs\")\n  * [Source Xref](xref/index.html \"Source Xref\")\n  * Reference\n  * [Core Extensions](core-extensions.",
-        "score": "-5.481942176818848",
-        "source": "tech-docs",
-        "id": "fb606457-034c-4f91-b49f-0b694553ba71"
-      },
-      {
-        "text": "#\nspring.cloud.consul.enabled=false\nspring.cloud.zookeeper.enabled=false\nspring.cloud.discovery.enabled=false\n\nspring.datasource.url = jdbc:h2:mem:~/apolloportaldb;mode=mysql;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;BUILTIN_ALIAS_OVERRIDE=TRUE;DATABASE_TO_UPPER=FALSE\n\nspring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl\nspring.jpa.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.show_sql=false\nspring.jpa.properties.hibernate.metadata_builder_contributor=com.ctrip.framework.apollo.common.jpa.SqlFunctionsMetadataBuilderContributor\nspring.jpa.defer-datasource-initialization=true\n\nspring.h2.console.enabled = true\nspring.h2.console.settings.web-allow-others=true\n\nspring.session.store-type=none\nspring.main.allow-bean-definition-overriding=true",
-        "score": "-5.710515975952148",
-        "source": "github",
-        "id": "4466d0d6-6f28-4687-98f0-4e9a7c3730ae"
-      },
-      {
-        "text": "[![Maven Settings](../../../images/apache-maven-project.png)](../../../)\n\n[![](../../../images/maven-logo-black-on-white.png)](../../../)\n\n* * *\n\n  * [Apache](https://www.apache.org/ \"Apache\")/\n  * [Maven](../../../index.html \"Maven\")/\n  * [Ref](../../ \"Ref\")/\n  * [Maven 3.9.7](../ \"Maven 3.9.7\")/\n  * [Maven Settings](index.html \"Maven Settings\")/\n  * Settings [![](./images/accessories-text-editor.png)](https://github.com/apache/maven/tree/maven-3.9.7/maven-settings/target/generated-site/xdoc/settings.xml)\n  * | Last Published: 2024-05-22\n  * Version: 3.9.7\n\n  * Overview\n  * [Introduction](index.html \"Introduction\")\n  * [Javadocs](apidocs/index.html \"Javadocs\")\n  * [Source Xref](xref/index.html \"Source Xref\")\n  * Descriptors Reference\n  * [POM](.",
-        "score": "-5.816484451293945",
-        "source": "tech-docs",
-        "id": "17f1567d-d7f4-4e76-8c62-e5d31b7cb91c"
-      },
-      {
-        "text": "[![Maven Model](../../../images/apache-maven-project.png)](../../../)\n\n[![](../../../images/maven-logo-black-on-white.png)](../../../)\n\n* * *\n\n  * [Apache](https://www.apache.org/ \"Apache\")/\n  * [Maven](../../../index.html \"Maven\")/\n  * [Ref](../../ \"Ref\")/\n  * [Maven 3.9.7](../ \"Maven 3.9.7\")/\n  * [Maven Model](index.html \"Maven Model\")/\n  * Maven [![](./images/accessories-text-editor.png)](https://github.com/apache/maven/tree/maven-3.9.7/maven-model/target/generated-site/xdoc/maven.xml)\n  * | Last Published: 2024-05-22\n  * Version: 3.9.7\n\n  * Overview\n  * [Introduction](index.html \"Introduction\")\n  * [Javadocs](apidocs/index.html \"Javadocs\")\n  * [Source Xref](xref/index.html \"Source Xref\")\n  * Descriptors Reference\n  * [POM](.",
-        "score": "-5.833898067474365",
-        "source": "tech-docs",
-        "id": "b093ed07-6824-41c6-a4a2-de4ec0b16bd5"
-      },
-      {
-        "text": "# [![](../../images/apache-maven-project.png)](https://www.apache.org/)\n\n# [![](../../images/maven-logo-black-on-white.png)](../.././)\n\n* * *\n\n  * [Apache](https://www.apache.org/)/\n  * [Maven](../../index.html)/\n  * Maven Getting Started Guide [![Edit](../../images/accessories-text-editor.png)](https://github.com/apache/maven-site/tree/master/content/apt/guides/getting-started/index.apt)\n  * | Last Published: 2025-02-07\n  * | [Get Sources](../../scm.html)\n  * [Download](../../download.cgi)\n\n  * [Welcome](../../index.html)\n  * [License](https://www.apache.org/licenses/)\n  * About Maven\n  * [What is Maven?](././what-is-maven.html)\n  * [Features](././maven-features.html)\n  * [Download](././download.html)\n  * [Use](././users/index.html)\n  * [Release Notes](././docs/history.html)\n  * Documentation\n  * [Maven Plugins](./.",
-        "score": "-6.425353050231934",
-        "source": "tech-docs",
-        "id": "a07f78b3-cdf8-45d3-9f61-0976b67005d2"
-      }
-    ]
-  },
-  {
-    "dependency_category": "value-equality",
-    "index": 8,
-    "link_str": "apollo::::apollo-adminservice/src/test/resources/application.properties::::spring.jpa.properties.hibernate.show_sql::::false <-> apollo::::apollo-configservice/src/test/resources/application.properties::::spring.cloud.zookeeper.enabled::::false",
-    "project": "apollo",
-    "option_name": "spring.jpa.properties.hibernate.show_sql",
-    "option_value": "FALSE",
-    "option_type": "ConfigType.BOOLEAN",
-    "option_file": "apollo-adminservice/src/test/resources/application.properties",
-    "option_technology": "spring",
-    "dependent_option_name": "spring.cloud.zookeeper.enabled",
-    "dependent_option_value": "FALSE",
-    "dependent_option_type": "ConfigType.BOOLEAN",
-    "dependent_option_file": "apollo-configservice/src/test/resources/application.properties",
-    "dependent_option_technology": "spring",
-    "config_type": "correct",
-    "rating": "FALSE",
-    "final_rating": false,
-    "final_category": "Boolean",
-    "sub_category": "Boolean",
-    "explanation": "different options that are not related",
-    "context": [
-      {
-        "text": "#\nspring.cloud.consul.enabled=false\nspring.cloud.zookeeper.enabled=false\nspring.cloud.discovery.enabled=false\n\nspring.datasource.url = jdbc:h2:mem:~/apolloconfigdb;mode=mysql;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;BUILTIN_ALIAS_OVERRIDE=TRUE;DATABASE_TO_UPPER=FALSE\n\nspring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl\nspring.jpa.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.show_sql=false\nspring.jpa.properties.hibernate.metadata_builder_contributor=com.ctrip.framework.apollo.common.jpa.SqlFunctionsMetadataBuilderContributor\nspring.jpa.defer-datasource-initialization=true\n\nspring.h2.console.enabled = true\nspring.h2.console.settings.web-allow-others=true",
-        "score": "5.994012355804443",
-        "source": "github",
-        "id": "7cef0bdb-bebc-4183-a712-486632e2fbe5"
-      },
-      {
-        "text": "#\nspring.cloud.consul.enabled=false\nspring.cloud.zookeeper.enabled=false\nspring.cloud.discovery.enabled=false\n\nspring.datasource.url = jdbc:h2:mem:~/apolloconfigdb;mode=mysql;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;BUILTIN_ALIAS_OVERRIDE=TRUE;DATABASE_TO_UPPER=FALSE\n\nspring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl\nspring.jpa.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.show_sql=false\nspring.jpa.properties.hibernate.metadata_builder_contributor=com.ctrip.framework.apollo.common.jpa.SqlFunctionsMetadataBuilderContributor\nspring.jpa.defer-datasource-initialization=true\n\nspring.h2.console.enabled = true\nspring.h2.console.settings.web-allow-others=true\n\nspring.main.allow-bean-definition-overriding=true",
-        "score": "5.909590244293213",
-        "source": "github",
-        "id": "39dbc6e6-75d0-4641-8dfc-fbcb7da5fc3d"
-      },
-      {
-        "text": "#\nspring.cloud.consul.enabled=false\nspring.cloud.zookeeper.enabled=false\nspring.cloud.discovery.enabled=false\n\nspring.datasource.url = jdbc:h2:mem:~/apolloportaldb;mode=mysql;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;BUILTIN_ALIAS_OVERRIDE=TRUE;DATABASE_TO_UPPER=FALSE\n\nspring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl\nspring.jpa.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.show_sql=false\nspring.jpa.properties.hibernate.metadata_builder_contributor=com.ctrip.framework.apollo.common.jpa.SqlFunctionsMetadataBuilderContributor\nspring.jpa.defer-datasource-initialization=true\n\nspring.h2.console.enabled = true\nspring.h2.console.settings.web-allow-others=true\n\nspring.session.store-type=none\nspring.main.allow-bean-definition-overriding=true",
-        "score": "5.880828380584717",
-        "source": "github",
-        "id": "4466d0d6-6f28-4687-98f0-4e9a7c3730ae"
-      },
-      {
-        "text": "#\nspring.cloud.consul.enabled=false\nspring.cloud.zookeeper.enabled=false\n\nspring.datasource.url = jdbc:h2:mem:~/apolloconfigdb;mode=mysql;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;BUILTIN_ALIAS_OVERRIDE=TRUE;DATABASE_TO_UPPER=FALSE\n\nspring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl\nspring.jpa.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.show_sql=false\nspring.jpa.properties.hibernate.metadata_builder_contributor=com.ctrip.framework.apollo.common.jpa.SqlFunctionsMetadataBuilderContributor\nspring.jpa.defer-datasource-initialization=true\n\nspring.h2.console.enabled = true\nspring.h2.console.settings.web-allow-others=true\n\nspring.main.allow-bean-definition-overriding=true\n\n# for ReleaseMessageScanner test\napollo.message-scan.interval=100",
-        "score": "5.700838088989258",
-        "source": "github",
-        "id": "bf04069a-9f4a-4383-a9d3-c0216e185caf"
-      },
-      {
-        "text": "application.properties\nspring.datasource.url=databaseURL spring.datasource.username=SQLusername spring.datasource.password=Password spring.datasource.driver-class-name=net.sourceforge.jtds.jdbc.Driver spring.datasource.initialSize=100 spring.datasource.minIdle=10  spring.jpa.hibernate.naming_strategy=org.hibernate.cfg.EJB3NamingStrategy spring.jpa.hibernate.naming.implicit-strategy=org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl  spring.datasource.tomcat.max-active=250 spring.datasource.tomcat.max-wait=30000 spring.datasource.test-on-borrow=true spring.datasource.test-while-idle=true spring.datasource.minEvictableIdleTimeMillis=21600000 spring.datasource.timeBetweenEvictionRunsMillis=43200000   spring.datasource.connection-test-query=SELECT 1 spring.datasource.validationQuery=SELECT 1 \nI'm glad for every suggestion that could help to fix this proplem.",
-        "score": "2.490285873413086",
-        "source": "so-posts",
-        "id": "2316eaea-dee1-4803-83af-36f4e6e3a148"
-      }
-    ]
-  },
-  {
-    "dependency_category": "value-equality",
-    "index": 9,
-    "link_str": "apollo::::apollo-adminservice/src/test/resources/application.yml::::management.health.status.order::::DOWN, OUT_OF_SERVICE, UNKNOWN, UP <-> apollo::::apollo-portal/src/test/resources/application.yml::::management.health.status.order::::DOWN, OUT_OF_SERVICE, UNKNOWN, UP",
-    "project": "apollo",
-    "option_name": "management.health.status.order",
-    "option_value": "DOWN, OUT_OF_SERVICE, UNKNOWN, UP",
-    "option_type": "ConfigType.UNKNOWN",
-    "option_file": "apollo-adminservice/src/test/resources/application.yml",
-    "option_technology": "spring",
-    "dependent_option_name": "management.health.status.order",
-    "dependent_option_value": "DOWN, OUT_OF_SERVICE, UNKNOWN, UP",
-    "dependent_option_type": "ConfigType.UNKNOWN",
-    "dependent_option_file": "apollo-portal/src/test/resources/application.yml",
-    "dependent_option_technology": "spring",
-    "config_type": "correct",
-    "rating": "Borderline",
-    "final_rating": false,
-    "final_category": "Others",
-    "sub_category": "Health Monitoring",
-    "explanation": "unless explicitly stated values can be different, for consistency purpose health management may requires equal values",
-    "context": [
-      {
-        "text": "tools.checkstyle.checks.imports.AvoidStaticImportCheck\">-->\n        <!--            <property name=\"excludes\"-->\n        <!--                      value=\"io.restassured.RestAssured.*, org.assertj.core.api.Assertions.*, org.junit.jupiter.api.Assertions.*, org.junit.jupiter.api.Assumptions.*, org.junit.Assert.*, org.junit.Assume.*, org.junit.internal.matchers.ThrowableMessageMatcher.*, org.junit.jupiter.api.Assertions.*, org.hamcrest.CoreMatchers.*, org.hamcrest.Matchers.*, org.springframework.boot.configurationprocessor.ConfigurationMetadataMatchers.*, org.springframework.boot.configurationprocessor.TestCompiler.*, org.springframework.boot.test.autoconfigure.AutoConfigurationImportedCondition.*, org.mockito.Mockito.*, org.mockito.BDDMockito.*, org.mockito.ArgumentMatchers.*, org.mockito.Matchers.*, org.springframework.restdocs.headers.HeaderDocumentation.*, org.springframework.restdocs.hypermedia.HypermediaDocumentation.*, org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*, org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.",
-        "score": "-9.110677719116211",
-        "source": "github",
-        "id": "c7bfc3a5-634a-46a8-8a39-a3ada796051a"
-      },
-      {
-        "text": "#\nspring.cloud.consul.enabled=false\nspring.cloud.zookeeper.enabled=false\nspring.cloud.discovery.enabled=false\n\nspring.datasource.url = jdbc:h2:mem:~/apolloportaldb;mode=mysql;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;BUILTIN_ALIAS_OVERRIDE=TRUE;DATABASE_TO_UPPER=FALSE\n\nspring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl\nspring.jpa.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.globally_quoted_identifiers=false\nspring.jpa.properties.hibernate.show_sql=false\nspring.jpa.properties.hibernate.metadata_builder_contributor=com.ctrip.framework.apollo.common.jpa.SqlFunctionsMetadataBuilderContributor\nspring.jpa.defer-datasource-initialization=true\n\nspring.h2.console.enabled = true\nspring.h2.console.settings.web-allow-others=true\n\nspring.session.store-type=none\nspring.main.allow-bean-definition-overriding=true",
-        "score": "-9.477191925048828",
-        "source": "github",
-        "id": "4466d0d6-6f28-4687-98f0-4e9a7c3730ae"
-      },
-      {
-        "text": "*, org.springframework.restdocs.operation.preprocess.Preprocessors.*, org.springframework.restdocs.payload.PayloadDocumentation.*, org.springframework.restdocs.request.RequestDocumentation.*, org.springframework.restdocs.restassured3.operation.preprocess.RestAssuredPreprocessors.*, org.springframework.restdocs.restassured3.RestAssuredRestDocumentation.*, org.springframework.restdocs.snippet.Attributes.*, org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.*, org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*, org.springframework.test.web.servlet.result.MockMvcResultMatchers.*, org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.*, org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*, org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*, org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo, org.springframework.test.web.client.ExpectedCount.*, org.springframework.test.web.client.match.MockRestRequestMatchers.*, org.springframework.test.web.client.response.MockRestResponseCreators.",
-        "score": "-10.043865203857422",
-        "source": "github",
-        "id": "907713ac-8daa-4b8c-8b4e-28419cfab0e4"
-      },
-      {
-        "text": "freight_amount, promotion_amount, \n      integration_amount, coupon_amount, discount_amount, \n      pay_type, source_type, status, \n      order_type, delivery_company, delivery_sn, \n      auto_confirm_day, integration, growth, \n      promotion_info, bill_type, bill_header, \n      bill_content, bill_receiver_phone, bill_receiver_email, \n      receiver_name, receiver_phone, receiver_post_code, \n      receiver_province, receiver_city, receiver_region, \n      receiver_detail_address, note, confirm_status, \n      delete_status, use_integration, payment_time, \n      delivery_time, receive_time, comment_time, \n      modify_time)\n    values (#{memberId,jdbcType=BIGINT}, #{couponId,jdbcType=BIGINT}, #{orderSn,jdbcType=VARCHAR}, \n      #{createTime,jdbcType=TIMESTAMP}, #{memberUsername,jdbcType=VARCHAR},",
-        "score": "-11.06892204284668",
-        "source": "github",
-        "id": "a35b41d1-7a9b-432b-9673-6dd03f7c555e"
-      },
-      {
-        "text": "freight_amount, promotion_amount, \n      integration_amount, coupon_amount, discount_amount, \n      pay_type, source_type, status, \n      order_type, delivery_company, delivery_sn, \n      auto_confirm_day, integration, growth, \n      promotion_info, bill_type, bill_header, \n      bill_content, bill_receiver_phone, bill_receiver_email, \n      receiver_name, receiver_phone, receiver_post_code, \n      receiver_province, receiver_city, receiver_region, \n      receiver_detail_address, note, confirm_status, \n      delete_status, use_integration, payment_time, \n      delivery_time, receive_time, comment_time, \n      modify_time)\n    values (#{memberId,jdbcType=BIGINT}, #{couponId,jdbcType=BIGINT}, #{orderSn,jdbcType=VARCHAR}, \n      #{createTime,jdbcType=TIMESTAMP}, #{memberUsername,jdbcType=VARCHAR},",
-        "score": "-11.269227027893066",
-        "source": "github",
-        "id": "1fa84302-2290-4117-bc8d-2c98b98f16b1"
+        "text": "This version introduces a structured\napproach to defining project dependencies, ensuring that your builds are\nconsistent and reliable.\n\n## Project Structure\n\nA typical Maven project structure includes a `pom.xml` file that defines the\nproject\u2019s configuration. Below is an example of a basic `pom.xml`:\n\n    \n    \n    <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n    <project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n             xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n        <modelVersion>4.0.0</modelVersion>\n        <groupId>org.example</groupId>\n        <artifactId>demo</artifactId>\n        <version>1.0-SNAPSHOT</version>\n        <properties>\n            <arrow.version>9.0.0</arrow.version>\n        </properties>\n        <dependencies>\n            <dependency>\n                <groupId>org.apache.",
+        "score": "-3.429387331008911",
+        "source": "web",
+        "id": "bafdd5d7-08d1-446c-b25b-6b6f657cba14"
       }
     ]
   }

@@ -31,6 +31,7 @@ def run_ingestion():
     data_dir = config["data"]["data_dir"]  
     github_project_names = config["data"]["github"]
 
+    # Create index for static context data
     for index_name, values in config["indices"].items():
         print(f"Run ingestion for index: {index_name}")
         
@@ -113,6 +114,36 @@ def run_ingestion():
             documents=documents,
             show_progress=True
         )
+
+    # Create index for dynamic context data
+    for index_name, values in config["indices"].items():
+        print(f"Create index for dynamic data: {index_name}")
+        
+        index_name = f"{values["index_name"]}-web"
+        dimension = values["dimension"]
+        embed_model_name = values["embedding_model"]
+
+        # set embedding model
+        set_embedding(embed_model_name=embed_model_name)
+
+        # create Pinecone client
+        pinecone_client = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+
+        # create index if not exist
+        if index_name not in pinecone_client.list_indexes().names():
+            print(f"Create index: {index_name}")
+            pinecone_client.create_index(
+                name=index_name,
+                dimension=dimension,
+                metric="dotproduct",
+                spec=ServerlessSpec(
+                    cloud="aws",
+                    region="us-east-1"
+                )
+            )
+        else:
+            print(f"Index: '{index_name}' already exists. Continue with next index.")
+            continue
     
 
 if __name__ == "__main__":

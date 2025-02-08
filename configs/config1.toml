@@ -3,6 +3,9 @@ embedding_model = "openai"
 embedding_dimension = 1536
 rerank = "sentence"
 top_n = 5
+num_websites = 3
+top_k = 10
+alpha = 0.5
 web_search_enabled = true
 inference_models = [
     "gpt-4o-mini-2024-07-18",
