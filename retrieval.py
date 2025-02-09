@@ -12,7 +12,7 @@ from llama_index.core import Settings, VectorStoreIndex
 from tqdm import tqdm
 from src.utils_ingestion import get_documents_from_web, add_nodes
 from src.prompts import CfgNetPromptSettings
-import time
+import backoff
 
 
 
@@ -21,21 +21,6 @@ def parse_args():
     parser.add_argument("--config_file", type=str)
     parser.add_argument("--env_file", type=str, default=".env")
     return parser.parse_args()
-
-
-def get_index(index_name: str):
-    pinecone_client = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-
-    if index_name in pinecone_client.list_indexes().names():
-        pinecone_client.Index(index_name)
-    else:
-        print(f"Index '{index_name}' does not exist")
-        return None
-
-    # get pinecone index
-    pinecone_index = pinecone_client.Index(index_name)
-
-    return pinecone_index
 
 
 def run_retrieval():
@@ -59,7 +44,12 @@ def run_retrieval():
     # get index
     pinecone_index_static = pinecone_client.Index(config["index_name"])
     pinecone_index_dynamic = pinecone_client.Index(f"{config['index_name']}-web")
-    pinecone_index_dynamic.delete(delete_all=True)
+
+    stats = pinecone_index_dynamic.describe_index_stats()
+    vector_count = stats.get("total_vector_count", 0)
+    if vector_count > 0:
+        print("Delete all vectors from dynamic index.")
+        pinecone_index_dynamic.delete(delete_all=True)
 
     # get static vector store
     vector_store_static = PineconeVectorStore(
@@ -81,21 +71,35 @@ def run_retrieval():
         alpha=config["alpha"]
     )
 
-    dataset=pd.read_csv(config["data_file"])[:5]
+    dataset=pd.read_csv(config["data_file"])
 
     retrieval_results = []
 
-    try:
-        for index, row in tqdm(dataset.iterrows(), total=len(dataset), desc="Processing dependencies"):
+    with open("data/evaluation/failed.json", "r", encoding="utf-8") as src:
+        failed = json.load(src)
+
+    entries_failed = []
+    
+    for index, row in tqdm(dataset.iterrows(), total=len(dataset), desc="Processing dependencies"):
+        try:
 
             # turn row data into dict
             row_dict = row.to_dict()
+
+            if not row_dict["index"] in failed:
+                print(f"Skip sample {row_dict['index']}")
+                continue
+            
+            print(f"Process sample {row_dict['index']}")
 
             # transform row data into a dependency
             dependency = transform(row)
 
             # get retrieval prompt
             retrieval_str = prompts.get_retrieval_prompt(dependency=dependency)
+
+            retrieved_dynamic_context = []
+            retrieved_static_context = []
 
             # scrape the web
             if config["web_search_enabled"]:
@@ -107,19 +111,22 @@ def run_retrieval():
 
                 print(f"Add {len(web_documents)} web documents to vector store.")
                 # add nodes to vector store and store their ids
-                web_node_ids = add_nodes(
-                    documents=web_documents,
-                    vector_store=vector_store_dynamic
-                )
+                if web_documents:
+                    web_node_ids = add_nodes(
+                        documents=web_documents,
+                        vector_store=vector_store_dynamic
+                    )
 
-                # retrieve relavant nodes from web index
-                retrieved_dynamic_context = retriever.retrieve(
-                    vector_store=vector_store_dynamic,
-                    retrieval_str=retrieval_str
-                )
+                    # retrieve relavant nodes from web index
+                    retrieved_dynamic_context = retriever.retrieve(
+                        vector_store=vector_store_dynamic,
+                        retrieval_str=retrieval_str
+                    )
 
-                # delete nodes from web index
-                vector_store_dynamic.delete_nodes(node_ids=web_node_ids)
+                    # delete nodes from web index
+                    vector_store_dynamic.delete_nodes(node_ids=web_node_ids)
+                else:
+                    print("No web documents found.")
 
             # retrieve relavant nodes
             retrieved_static_context = retriever.retrieve(
@@ -146,14 +153,19 @@ def run_retrieval():
             row_dict.update({"context": context})
 
             retrieval_results.append(row_dict)
-                
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        with open(config["retrieval_output_file"], "w", encoding="utf-8") as dest:
-            json.dump(retrieval_results, dest, indent=2)
-    
+
+        except Exception as e:
+            print(f"An error occurred for sample: {index}")
+            print(f"Error: {e}")
+            retrieval_results.append(row_dict)
+            entries_failed.append(row_dict["index"])
+            continue
+
     with open(config["retrieval_output_file"], "w", encoding="utf-8") as dest:
         json.dump(retrieval_results, dest, indent=2)
+
+    with open("data/evaluation/failed.json", "w", encoding="utf-8") as dest:
+        json.dump(entries_failed, dest, indent=2)
 
 
 if __name__ == "__main__":
