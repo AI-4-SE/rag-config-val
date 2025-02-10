@@ -86,9 +86,9 @@ def run_retrieval():
             # turn row data into dict
             row_dict = row.to_dict()
 
-            if not row_dict["index"] in failed:
-                print(f"Skip sample {row_dict['index']}")
-                continue
+            #if not row_dict["index"] in failed:
+            #    print(f"Skip sample {row_dict['index']}")
+            #    continue
             
             print(f"Process sample {row_dict['index']}")
 

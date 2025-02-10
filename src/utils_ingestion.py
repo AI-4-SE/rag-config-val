@@ -171,7 +171,6 @@ def add_nodes(documents: List[Document], vector_store: PineconeVectorStore) -> L
     Return:
         List of node ids.
     """
-
     # Create text parser
     text_parser = SentenceSplitter(
         chunk_size=256,
@@ -180,6 +179,7 @@ def add_nodes(documents: List[Document], vector_store: PineconeVectorStore) -> L
 
     # Parse documents into nodes
     nodes = text_parser.get_nodes_from_documents(documents=documents)
+    ids = [f"{node.ref_doc_id}#{node.node_id}" for node in nodes]
 
     # build list of transformations
     transformations = [text_parser, Settings.embed_model]
@@ -195,8 +195,5 @@ def add_nodes(documents: List[Document], vector_store: PineconeVectorStore) -> L
         documents=documents,
         show_progress=True
     )
-
-    # wait a few seconds until vector store is updated
-    time.sleep(10)
     
-    return [f"{node.ref_doc_id}#{node.node_id}" for node in nodes]
+    return ids

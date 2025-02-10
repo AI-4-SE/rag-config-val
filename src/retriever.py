@@ -3,6 +3,7 @@ from llama_index.core.schema import NodeWithScore
 from llama_index.postprocessor.sbert_rerank import SentenceTransformerRerank
 from llama_index.postprocessor.colbert_rerank import ColbertRerank
 from typing import Any, List
+import backoff
 
 
 class Retriever():
@@ -59,7 +60,6 @@ class Retriever():
         print(f"Reranked {len(nodes)} in {len(reranked_nodes)} nodes.")
         return reranked_nodes
     
-
     def retrieve(self, vector_store, retrieval_str: str) -> List[NodeWithScore]:
         """
         Retrieve and rerank nodes based on the given retrieval string.
@@ -82,10 +82,14 @@ class Retriever():
             alpha=self.alpha
         )
 
-        # retrieve nodes
-        retrieved_nodes = query_engine.retrieve(
-            query_bundle=QueryBundle(query_str=retrieval_str)
-        )
+        retrieved_nodes = []
+
+        while not retrieved_nodes:
+            # retrieve nodes
+            retrieved_nodes = query_engine.retrieve(
+                query_bundle=QueryBundle(query_str=retrieval_str)
+            )
+
         print("Len retrieved nodes: ", len(retrieved_nodes))
 
         return retrieved_nodes
