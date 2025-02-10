@@ -10,7 +10,7 @@ from llama_index.llms.ollama import Ollama
 from llama_index.core import Settings
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from src.prompts import CfgNetPromptSettings
+from src.prompts import Prompts
 from src.data import Dependency
 from typing import Dict, Optional, List
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -133,7 +133,7 @@ def get_most_similar_shot(shots: List[str], dependency: Dependency) -> str:
     """
     Return most similar shot based on the given dependency.
     """
-    task_str = CfgNetPromptSettings.get_task_str(dependency=dependency)
+    task_str = Prompts.get_task_str(dependency=dependency)
     
     all = shots + [task_str]
 
@@ -153,7 +153,7 @@ def get_most_similar_shots(shots: List[str], dependency: Dependency) -> str:
     """
     Return most similar shot based on the given dependency.
     """
-    task_str = CfgNetPromptSettings.get_task_str(dependency=dependency)
+    task_str = Prompts.get_task_str(dependency=dependency)
     
     all = shots + [task_str]
 

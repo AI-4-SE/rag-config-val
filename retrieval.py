@@ -11,7 +11,7 @@ from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.core import Settings, VectorStoreIndex
 from tqdm import tqdm
 from src.utils_ingestion import get_documents_from_web, add_nodes
-from src.prompts import CfgNetPromptSettings
+from src.prompts import Prompts
 import backoff
 
 
@@ -34,7 +34,6 @@ def run_retrieval():
     # load config
     config = load_config(config_file=args.config_file)
 
-    prompts = CfgNetPromptSettings
     pinecone_client = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
     # set inference and embedding moddels
@@ -75,8 +74,8 @@ def run_retrieval():
 
     retrieval_results = []
 
-    with open("data/evaluation/failed.json", "r", encoding="utf-8") as src:
-        failed = json.load(src)
+    #with open("data/evaluation/failed.json", "r", encoding="utf-8") as src:
+    #    failed = json.load(src)
 
     entries_failed = []
     
@@ -96,7 +95,7 @@ def run_retrieval():
             dependency = transform(row)
 
             # get retrieval prompt
-            retrieval_str = prompts.get_retrieval_prompt(dependency=dependency)
+            retrieval_str = Prompts.get_retrieval_prompt(dependency=dependency)
 
             retrieved_dynamic_context = []
             retrieved_static_context = []
