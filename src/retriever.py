@@ -27,8 +27,8 @@ class Retriever():
             print("Init ColbertRerank.")
             return ColbertRerank(
                 top_n=5,
-                model="colbert-ir/colvertv2.0",
-                tokenizer="colbert-ir/colvertv2.0",
+                model="colbert-ir/colbertv2.0",
+                tokenizer="colbert-ir/colbertv2.0",
                 keep_retrieval_score=True
             )
         if self.rerank.lower() == "sentence":
