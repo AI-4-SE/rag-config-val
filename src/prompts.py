@@ -1,8 +1,6 @@
 from llama_index.core import PromptTemplate
 from typing import Optional
 from src.data import Dependency
-from dataclasses import dataclass
-import logging
 
 
 class _Prompts:

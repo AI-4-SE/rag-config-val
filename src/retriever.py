@@ -3,7 +3,6 @@ from llama_index.core.schema import NodeWithScore
 from llama_index.postprocessor.sbert_rerank import SentenceTransformerRerank
 from llama_index.postprocessor.colbert_rerank import ColbertRerank
 from typing import Any, List
-import backoff
 
 
 class Retriever():

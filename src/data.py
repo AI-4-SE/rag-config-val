@@ -1,49 +1,7 @@
-from dataclasses import dataclass, field
-from llama_index.core.schema import NodeWithScore
-from llama_index.core.utils import truncate_text
-from typing import Optional, List, Dict
-import json
-import logging
-import pandas as pd
-
-@dataclass
-class Response:
-    input: str
-    input_complete: str
-    response: str
-    response_dict: Dict = field(default_factory=dict)
-    source_nodes: List[NodeWithScore] = field(default_factory=list)
-
-
-    def __post_init__(self):
-        try:
-            self.response_dict = json.loads(self.response)
-        except json.JSONDecodeError:
-            logging.info("Response cannot be converted into a dict.")
-
-    def __str__(self) -> str:
-        """Convert to string representation."""
-        return self.response or "None"
-
-    def get_formatted_sources(self, length: int = 100) -> str:
-        """Get formatted sources text."""
-        texts = []
-        for source_node in self.source_nodes:
-            fmt_text_chunk = truncate_text(source_node.node.get_content(), length)
-            doc_id = source_node.node.node_id or "None"
-            source_text = f"> Source (Doc id: {doc_id}): {fmt_text_chunk}"
-            texts.append(source_text)
-        return "\n\n".join(texts)
+from dataclasses import dataclass
+from typing import Optional
     
-    def to_dict(self):
-        """Convert response object in a dictionary."""
-        return {
-            "input": self.input,
-            "response": self.response,
-            "context": [source_node.node.get_content() for source_node in self.source_nodes]
-        }
     
-
 @dataclass
 class Dependency:
     project: Optional[str] = None
@@ -82,22 +40,3 @@ class Dependency:
             "category": self.category,
             "sub_category": self.sub_category
         }
-    
-def transform(row: pd.Series) -> Dependency:
-    return Dependency(
-        project=row["project"],
-        option_name=row["option_name"],
-        option_value=row["option_value"],
-        option_file=row["option_file"],
-        option_type=row["option_type"].split(".")[-1],
-        option_technology=row["option_technology"],
-        dependent_option_name=row["dependent_option_name"],
-        dependent_option_value=row["dependent_option_value"],
-        dependent_option_file=row["dependent_option_file"],
-        dependent_option_type=row["dependent_option_type"].split(".")[-1],
-        dependent_option_technology=row["dependent_option_technology"],
-        rating=row["final_rating"],
-        category=row["final_category"],
-        sub_category=row["sub_category"]
-    )
-    

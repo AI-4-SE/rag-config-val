@@ -4,7 +4,6 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.readers.web import SimpleWebPageReader
 from llama_index.readers.github import GithubRepositoryReader, GithubClient
 from llama_index.core import Settings, SimpleDirectoryReader, Document
-from sentence_transformers import SentenceTransformer
 from llama_index.llms.openai import OpenAI
 from llama_index.llms.ollama import Ollama
 from llama_index.core import Settings
@@ -21,7 +20,6 @@ import numpy as np
 import requests
 import traceback
 import os
-import json
 import toml
 
 
@@ -122,12 +120,10 @@ def transform(entry) -> Dependency:
         dependent_option_value=entry["dependent_option_value"],
         dependent_option_type=entry["dependent_option_type"].split(".")[-1],
         dependent_option_file=entry["dependent_option_file"],
-        dependent_option_technology=entry["dependent_option_technology"]
+        dependent_option_technology=entry["dependent_option_technology"],
     )
     return dependency
-
-
-
+    
 
 def get_most_similar_shot(shots: List[str], dependency: Dependency) -> str:
     """
@@ -307,84 +303,3 @@ def get_dominat_response(responses: List[Dict]) -> List:
     ]
 
     return random.choice(dominant_cluster_reasons)
-
-def compute_evaluation_metrics(dataset: List) -> list:
-    """
-    Compute the evaluation metrics, including precision, recall and F1 score.
-
-    Args:
-        dataset: List
-            The dataset to compute the evaluation metrics for.
-
-    Returns:
-        List of the evaluation results.
-    """
-    models = list(dataset[0]["generations"].keys())
-
-    metrics = []
-
-    for model in models:
-
-        print("Model: ", model)
-
-        true_positives = []
-        true_negatives = []
-        false_positives = []
-        false_negatives = []
-        accuracy_count = []
-        skipped = 0
-
-        for entry in dataset:
-            final_rating = entry["final_rating"]
-            model_response = entry["generations"][model]
-            isDependency = model_response["isDependency"]
-
-            if isinstance(isDependency, str) and isDependency == "None":
-                skipped += 1
-                continue
-
-            # TP: The LLM validates a dependency as correct and the dependency is correct
-            if isDependency and final_rating:
-                accuracy_count.append(1)
-                true_positives.append(1)
-                
-            # FP: The LLM validates a dependency as correct, but the dependency is actually incorrect
-            if isDependency and not final_rating:
-                accuracy_count.append(0)
-                false_positives.append(1)
-
-            # TN: The LLM validates a dependency as incorrect and the dependency is incorrect
-            if not isDependency and not final_rating:
-                accuracy_count.append(1)
-                true_negatives.append(1)
-
-            # FN: The LLM validates a dependency as incorrect, but the dependency is actually correct
-            if not isDependency and final_rating:
-                accuracy_count.append(0)
-                false_negatives.append(1)
-
-        tp = sum(true_positives)
-        fp = sum(false_positives)
-        fn = sum(false_negatives)
-        tn = sum(true_negatives)
-        accuracy = sum(accuracy_count)/len(accuracy_count)
-
-        precision = tp / (tp + fp) if (tp + fp) > 0 else 0
-        recall = tp / (tp + fn) if (tp + fn) > 0 else 0
-        f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
-
-        print("TP: ", tp)
-        print("FP: ", fp)
-        print("FN: ", fn)
-        print("TN: ", tn)
-
-        metrics.append({
-            "model": model,
-            "precision": precision,
-            "recall": recall,
-            "f1_score": f1_score,
-            "accuracy": accuracy,
-            "skipped": skipped
-        })
-
-    return metrics

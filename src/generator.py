@@ -1,7 +1,6 @@
 from openai import OpenAI, RateLimitError, Timeout, APIError, APIConnectionError
 from rich.logging import RichHandler
-from typing import Tuple, List, Dict
-from ollama._types import ResponseError, RequestError
+from typing import List, Dict
 from src.utils import get_dominat_response
 import ollama
 import backoff

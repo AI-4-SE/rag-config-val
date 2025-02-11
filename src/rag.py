@@ -1,142 +1,161 @@
-from typing import List
-from llama_index.core import Document, Settings
+from typing import Dict, List
+from src.ingestion import get_documents_from_web, add_nodes
 from llama_index.vector_stores.pinecone import PineconeVectorStore
-from src.utils import load_config, set_embedding, set_llm
-from src.utils_ingestion import get_documents_from_web, add_nodes_to_vector_store, delete_nodes_by_ids
-from src.data import transform
 from src.retriever import Retriever
-from src.prompts import CfgNetPromptSettings
-import pandas as pd
-from tqdm import tqdm
-import json
+from src.generator import Generator
+from src.prompts import Prompts
+from src.utils import get_projet_description, get_most_similar_shots, load_shots
+from src.data import Dependency
+from rich.logging import RichHandler
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    handlers=[RichHandler()],
+)
 
 class RAG:
-    def __init__(self, vector_store, retriever, generators) -> None:
-        self.vector_store = vector_store
-        self.prompts = CfgNetPromptSettings
+    def __init__(
+        self, 
+        static_index,
+        dynamic_index ,
+        retriever: Retriever, 
+        generators: List[Generator]
+    ) -> None:
+        self.vector_store_static = PineconeVectorStore(
+            pinecone_index=static_index,
+            add_sparse_vector=True
+        )
+        self.vector_store_dynamic = PineconeVectorStore(
+            pinecone_index=dynamic_index,
+            add_sparse_vector=True
+        )
+        self.prompts = Prompts
         self.retriever = retriever
         self.generators = generators
-
-        print("Init RAG.")
+        logging.info("Initialize RAG.")
   
-    def retrieve(self, dataset: pd.DataFrame, enable_websearch: bool) -> List:
+    def retrieve(self, dependency: Dependency, with_websearch: bool) -> str:
         """
-        Retrieve relevant context for each sample in the dataset and return the retrieval results
+        Retrieve relevant context for given dependency
         
         Args:
-            dataset: pd.Dataframe
-                The dataset to retrieve the data from.
-            enable_websearch: bool
+            dependency: Dependency
+                Dependency to retrieve context for.
+            with_websearch: bool
                 Whether to enable websearch.
 
         Returns:
-            List of the retrieval results.
+            Retrieved context.
         """
-        retrieval_results = []
+        retrieved_dynamic_context = []
+        retrieved_static_context = []
 
-        for index, row in tqdm(dataset.iterrows(), total=len(dataset), desc="Processing dependencies"):
+        # get retrieval prompt
+        retrieval_str = self.prompts.get_retrieval_prompt(dependency=dependency)
 
-            # turn row data into dict
-            row_dict = row.to_dict()
-
-            # transform row data into a dependency
-            dependency = transform(row)
-
-            # get retrieval prompt
-            retrieval_str = self.prompts.get_retrieval_prompt(dependency=dependency)
-
-            # scrape the web
-            if enable_websearch:
-                print(f"Start scraping the web for dependency {index}")
-                web_documents = get_documents_from_web(
+        # scrape the web
+        if with_websearch:
+            logging.info(f"Start Web scraping.")
+            web_documents = get_documents_from_web(
                     query_str=retrieval_str,
                     num_websites=3
                 )
-
-                print(f"Add {len(web_documents)} web documents to vector store.")
-                # add nodes to vector store and store their ids
-                web_node_ids = add_nodes_to_vector_store(
+            
+            logging.info(f"Add {len(web_documents)} web documents to vector store.")
+            # add nodes to vector store and store their ids
+            if web_documents:
+                web_node_ids = add_nodes(
                     documents=web_documents,
-                    vector_store=self.vector_store
+                    vector_store=self.vector_store_dynamic
                 )
 
-            # retrieve relavant nodes
-            retrieved_nodes = self.retriever.retrieve(
-                retrieval_str=retrieval_str
-            )
-
-            # defines context to append to row dict
-            context = [
-                {
-                    "text": node.get_content(),
-                    "score": str(node.get_score()),
-                    "source": node.metadata["source"],
-                    "id": node.node_id
-                } for node in retrieved_nodes
-            ]
-
-            row_dict.update({"context": context})
-
-            retrieval_results.append(row_dict)
-
-            # delete nodes from websearch if enabled
-            if enable_websearch:
-                print(f"Delete nodes from vector store.")
-                delete_nodes_by_ids(
-                    vector_store=self.vector_store,
-                    ids=web_node_ids
+                # retrieve relavant nodes from dynamic vector store
+                retrieved_dynamic_context = self.retriever.retrieve(
+                    vector_store=self.vector_store_dynamic,
+                    retrieval_str=retrieval_str
                 )
 
-        return retrieval_results
+                # delete nodes from web index
+                self.vector_store_dynamic.delete_nodes(node_ids=web_node_ids)
+            else:
+                logging.info("No web documents found. There is nothing to add nor delete.")
+
+        # retrieve relavant nodes
+        retrieved_static_context = self.retriever.retrieve(
+            retrieval_str=retrieval_str
+        )
+
+        # retrieve relavant nodes from statix vector store
+        retrieved_static_context = self.retriever.retrieve(
+            vector_store=self.vector_store_static,
+            retrieval_str=retrieval_str
+        )
+
+        # merge static and dynamic context and rerank
+        reranked_nodes = self.retriever.rerank_nodes(
+            nodes=retrieved_static_context + retrieved_dynamic_context,
+            retrieval_str=retrieval_str
+        )
+
+        # define context string
+        context_str = "\n\n".join([node.get_content() for node in reranked_nodes])
+        
+        return context_str
     
-    def generate(self, dataset: List, with_context: bool) -> List:
+    def generate(self, dependency: Dependency, with_context: bool, with_websearch: bool, advanced: bool = False) -> Dict:
         """
-        Generate answers for sample in the dataset and return generation results.
+        Validate a given dependency with our without context.
 
         Args:
-            dataset: List
-                The dataset to generate the answers for.
+            dependency: Dependency
+                Dependency to validate.
             with_context: bool
-                Whether to start generation with or without context.
+                Whether to start validation with or without context.
+            with_websearch: bool
+                Whether to enable websearch or not.
+            advanced: bool
+                Whether to use advanced prompts or not.
         
         Returns:
             List of the generation results.
         """
-        generation_results = []
+        if advanced:
+            shots = load_shots()
+            project_info = get_projet_description(project_name=dependency.project)
+            shot_str = "\n\n".join([shot for shot in get_most_similar_shots(shots, dependency)])
 
-        for sample in tqdm(dataset, total=len(dataset), desc="Processing dependencies"):
-            # transform data into dependency
-            dependency = transform(row=sample)
+        system_str = self.prompts.get_system_str(
+            project_name=dependency.project,
+            project_info=project_info,
+            advanced=advanced
+        )
 
-            # create prompt parts
-            system_str = self.prompts.get_system_str(dependency=dependency)
-            task_str = self.prompts.get_task_str(dependency=dependency)
-            context_str = "\n\n".join([x["text"] for x in sample["context"]])
-            format_str = self.prompts.get_format_prompt()
+        task_str = self.prompts.get_task_str(dependency=dependency)
+        context_str = self.retrieve(dependency=dependency, with_websearch=with_websearch)
+        format_str = self.prompts.get_format_prompt()
             
 
-            # create final query
-            if with_context:
-                query_str = self.prompts.query_prompt.format(
-                    context_str=context_str,
-                    task_str=task_str,
-                    format_str=format_str
-                )
-            else:
-                query_str = f"{task_str}\n\n{format_str}"
+        # create final query
+        if with_context:
+            query_str = self.prompts.get_query_str(
+                context_str=context_str,
+                task_str=task_str,
+                shot_str=shot_str,
+                advanced=advanced
+            )
+        else:
+            query_str = f"{task_str}\n\n{format_str}"
 
-            messages = [
-                {"role": "system", "content": system_str},
-                {"role": "user", "content": query_str }
-            ]
+        messages = [
+            {"role": "system", "content": system_str},
+            {"role": "user", "content": query_str }
+        ]
 
-            generations = {}
-            for generator in self.generators:
-                response = generator.generate(messages=messages)
-                generations.update({generator.model_name: response})
+        generations = {}
+        for generator in self.generators:
+            response = generator.generate(messages=messages)
+            generations.update({generator.model_name: response})
 
-            sample.update({"generations": generations})
-            generation_results.append(sample)
-
-        return generation_results
+        return generations
