@@ -124,15 +124,15 @@ def process_and_generate_heatmaps(file_path_1, file_path_2):
 
     # Generate individual heatmaps
     create_heatmap(result_1, saturated_colors, "Proportion of Context Sources per Slot", "Top N Slot",
-                   "Context Source", "figures/context.pdf", show_ylabel=True, show_yticks=True, show_cbar_label=False)
+                   "Context Source", "../data/evaluation/figures/context.pdf", show_ylabel=True, show_yticks=True, show_cbar_label=False)
 
     create_heatmap(result_2, saturated_colors, "Proportion of Context Sources per Slot", "Top N Slot",
-                   "", "figures/context_refined.pdf", show_ylabel=False, show_yticks=False, show_cbar_label=False, ratio = 5.5 / 7, scale_adjust=0.79)
+                   "", "../data/evaluation/figures/context_refined.pdf", show_ylabel=False, show_yticks=False, show_cbar_label=False, ratio = 5.5 / 7, scale_adjust=0.79)
 
     # Compute and generate difference heatmap with diverging palette and center threshold at 0
     difference = compute_difference(result_1, result_2)
     create_heatmap(difference, diverging_colors, "Difference in Proportion of Context Sources", "Top N Slot",
-                   "", "figures/context_difference.pdf", center=0.0, show_ylabel=False, show_yticks=False, show_cbar_label=True, ratio = 4.8 / 7, scale_adjust=0.8)
+                   "", "../data/evaluation/figures/context_difference.pdf", center=0.0, show_ylabel=False, show_yticks=False, show_cbar_label=True, ratio = 4.8 / 7, scale_adjust=0.8)
 
 
 
