@@ -1,4 +1,5 @@
 from cfgnet.network.network import Network, NetworkConfiguration
+from sklearn.model_selection import train_test_split
 import pandas as pd
 import random
 
@@ -57,8 +58,20 @@ def get_dependencies(repo_dir: str, num_dependencies: int = 50) -> None:
     df.to_csv(f"../data/projects/{repo_name}_dependencies.csv", index=False)
 
 
+def stratified_sampling():
+    data_file = "../data/evaluation/all_dependencies.csv"
+
+    df = pd.read_csv(data_file)
+
+    train_df, test_df = train_test_split(df, test_size=0.3, stratify=df["project"], random_state=42)
+
+    train_df.to_csv("../data/evaluation/train_dependencies.csv", index=False)
+    test_df.to_csv("../data/evaluation/test_dependencies.csv", index=False)
+
 
 if __name__ == "__main__":
-    print("Get Repositories")
-    for repo_dir in EVAL_REPOS:
-        get_dependencies(repo_dir=repo_dir, num_dependencies=10)
+    #print("Get Repositories")
+    #for repo_dir in EVAL_REPOS:
+    #    get_dependencies(repo_dir=repo_dir, num_dependencies=10)
+
+    stratified_sampling()
