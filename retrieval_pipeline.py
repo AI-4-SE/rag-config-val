@@ -1,18 +1,16 @@
 
-import argparse
-import pandas as pd
-import os
-import json
 from pinecone import Pinecone
 from dotenv import load_dotenv
 from src.retriever import Retriever
 from src.utils import load_config, set_embedding, set_llm, transform
 from llama_index.vector_stores.pinecone import PineconeVectorStore
-from llama_index.core import Settings, VectorStoreIndex
 from tqdm import tqdm
-from src.utils_ingestion import get_documents_from_web, add_nodes
+from src.ingestion import get_documents_from_web, add_nodes
 from src.prompts import Prompts
-import backoff
+import argparse
+import pandas as pd
+import os
+import json
 
 
 
@@ -127,7 +125,7 @@ def run_retrieval():
                 else:
                     print("No web documents found.")
 
-            # retrieve relavant nodes
+            # retrieve relevant nodes
             retrieved_static_context = retriever.retrieve(
                 vector_store=vector_store_static,
                 retrieval_str=retrieval_str

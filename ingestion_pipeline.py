@@ -5,7 +5,7 @@ from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.settings import Settings
-from src.utils_ingestion import get_documents_from_github, get_documents_from_dir, get_documents_from_urls
+from src.ingestion import get_documents_from_github, get_documents_from_dir, get_documents_from_urls
 import argparse
 import os
 

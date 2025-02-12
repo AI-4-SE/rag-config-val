@@ -305,7 +305,7 @@ def build_dynamic_index(ingestion_config: Dict):
     for index_name, values in ingestion_config["indices"].items():
         logging.info(f"Create index for dynamic data: {index_name}")
         
-        index_name = f"{values["index_name"]}-web"
+        index_name = f"{values['index_name']}-web"
         dimension = values["dimension"]
 
         # create Pinecone client
