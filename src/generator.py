@@ -60,14 +60,14 @@ class Generator:
         response_pool = []
 
         for _ in range(self.max_genrations):
-            print(f"Start generation using {self.model_name}")
-            try:
-                response = self._generate(messages=messages)
+            try:   
+                 print(f"Generate response using {self.model_name}")
+                 response = self._generate(messages=messages)
             except Exception as error:
-                print(f"Exception occurred: {error}. Fall back to DEFAULT RESPONSE")
-                print(traceback.print_exc())
-                response = DEFAULT_RESPONSE.copy()
-                response["error"] = str(error)
+                 print(f"Exception occurred: {error}. Fall back to DEFAULT RESPONSE")
+                 print(traceback.print_exc())
+                 response = DEFAULT_RESPONSE.copy()
+                 response["error"] = str(error)
 
             print("Add response to answer pool.")
             response_pool.append(response)
@@ -122,15 +122,16 @@ class GPTGenerator(Generator):
     )
     def _generate(self, messages: List) -> str:
         client = OpenAI(
-            api_key=os.getenv("PROXY_SERVER_API_KEY"),
-            base_url=os.getenv("BASE_URL")
+            api_key=os.getenv("OPENAI_API_KEY"),
+            #base_url=os.getenv("BASE_URL")
         )
         response = client.chat.completions.create(
             model=self.model_name, 
             messages=messages,        
             temperature=self.temperature,
             response_format={"type": "json_object"},
-            max_tokens=self.max_tokens
+            max_tokens=self.max_tokens,
+            timeout=90
         )
 
         response_content = response.choices[0].message.content.strip()

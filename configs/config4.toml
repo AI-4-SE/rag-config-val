@@ -17,7 +17,7 @@ inference_models = [
 ]
 temperature = 0.5
 with_context = true
-data_file = "data/evaluation/data/train_dependencies.csv"
+data_file = "data/evaluation/train_dependencies.csv"
 retrieval_file = "data/evaluation/retrieval_results/train_dependencies_config4.json"
 generation_file = "data/evaluation/generation_results/train_dependencies_config4.json"
 advanced = false
