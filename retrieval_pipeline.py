@@ -7,11 +7,14 @@ from llama_index.vector_stores.pinecone import PineconeVectorStore
 from tqdm import tqdm
 from src.ingestion import get_documents_from_web, add_nodes
 from src.prompts import Prompts
+from typing import Dict
 import argparse
 import pandas as pd
 import os
 import json
+import mlflow
 
+mlflow.autolog()
 
 
 def parse_args():
@@ -21,17 +24,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def run_retrieval():
-    print("Run retrieval.")
-    # parse args
-    args = parse_args()
-
-    # load env variables
-    load_dotenv(dotenv_path=args.env_file)
-
-    # load config
-    config = load_config(config_file=args.config_file)
-
+def run_retrieval(config: Dict, config_name: str):
     pinecone_client = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
     # set inference and embedding moddels
@@ -158,12 +151,35 @@ def run_retrieval():
             entries_failed.append(row_dict["index"])
             continue
 
-    with open(config["retrieval_output_file"], "w", encoding="utf-8") as dest:
+    with open(config["retrieval_file"], "w", encoding="utf-8") as dest:
         json.dump(retrieval_results, dest, indent=2)
 
-    with open("data/evaluation/failed.json", "w", encoding="utf-8") as dest:
+    with open(f"data/evaluation/retrieval_failed_{config_name}.json", "w", encoding="utf-8") as dest:
         json.dump(entries_failed, dest, indent=2)
 
 
+def main():
+    # parse args
+    args = parse_args()
+
+    # load env variable
+    load_dotenv(dotenv_path=args.env_file)
+
+    # load config
+    config = load_config(config_file=args.config_file)
+    config_name = os.path.basename(args.config_file).split(".")[0]
+
+    mlflow.set_experiment(experiment_name="retrieval")
+    
+    with mlflow.start_run(run_name=f"retrieval_{config_name}"): 
+
+        mlflow.log_params(config)
+        mlflow.log_artifact(local_path=args.env_file)
+
+        run_retrieval(config=config, config_name=config_name) 
+
+        mlflow.log_artifact(local_path=config["retrieval_file"])
+
+
 if __name__ == "__main__":
-    run_retrieval()
+    main()

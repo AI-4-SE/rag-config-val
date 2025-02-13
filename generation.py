@@ -4,31 +4,23 @@ from src.generator import GeneratorFactory
 from src.prompts import Prompts
 from dotenv import load_dotenv
 from tqdm import tqdm
+from typing import Dict
 import pandas as pd
 import argparse
 import os
 import json
+import mlflow
 
+
+mlflow.autolog()
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config_file", type=str)
-    parser.add_argument("--with_context", type=bool, default=False)
     parser.add_argument("--env_file", type=str, default=".env")
     return parser.parse_args()
 
-def run_generation():
-    print("Start generation.")
-
-    # parse args
-    args = parse_args()
-
-    # load env
-    load_dotenv(args.env_file)
-
-    # load config
-    config = load_config(args.config_file)
-    config_name = os.path.basename(args.config_file).split(".")[0]
+def run_generation(config: Dict, config_name: str):
 
     # set inference and embedding moddels
     set_llm(inference_model_name=config["inference_models"][0])
@@ -42,18 +34,26 @@ def run_generation():
 
     print(f"{len(generators)} generators initialized.")
 
-    with open(config["retrieval_output_file"], "r", encoding="utf-8") as src:
+    with open(config["generation_file"], "r", encoding="utf-8") as src:
         data = json.load(src)
 
-    generation_results = []
-    entries_failed = []
-    counter = 0
+    print("Length of data:", len(data))
+
+    if config["with_context"]:
+        print("Start generation with context.")
+    else:
+        print("Start generation without context.")
 
     for generator in generators:
 
-        for entry in tqdm(data, total=len(data), desc="Generating responses..."):
+        # reset generation results and failed entries
+        generation_results = []
+        entries_failed = []
+        counter = 0
+
+        for entry in tqdm(data, total=len(data), desc="Generating responses"):
             try:
-                # transform row data into a dependency
+            # transform row data into a dependency
                 dependency = transform(entry)
 
                 # get prompts
@@ -69,7 +69,7 @@ def run_generation():
                 
 
                 # create final query
-                if args.with_context:
+                if config["with_context"]:
                     query_prompt = Prompts.get_query_str(
                         context_str=context_str,
                         task_str=task_str,
@@ -85,20 +85,26 @@ def run_generation():
                     {"role": "user", "content": query_prompt }
                 ]
 
-
-                response = generator.generate(messages=messages)    
                 if "generations" not in entry:
                     entry["generations"] = {}
-                entry["generations"][generator.model_name] = response
+
+                # check if generation for model already exists
+                if not generator.model_name in entry["generations"]:
+                    print(f"Generate response for entry {entry['index']} with model {generator.model_name}.")
+                    response = generator.generate(messages=messages)
+                    entry["generations"][generator.model_name] = response
+                else:
+                    print(f"Generation for entry {entry['index']} of model {generator.model_name} already exists. Skipping generation.")
+                
                 generation_results.append(entry)
 
                 counter += 1
 
                 # Save results every 100 entries
                 if counter % 50 == 0:
-                    with open(f"data/evaluation/generation_results/all_dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
+                    with open(f"data/evaluation/generation_results/train_dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
                         json.dump(generation_results, dest, indent=2)
-                    with open(f"data/evaluation/failed_{config_name}_{counter}.json.json", "w", encoding="utf-8") as dest:
+                    with open(f"data/evaluation/failed_train_{config_name}_{counter}.json.json", "w", encoding="utf-8") as dest:
                         json.dump(entries_failed, dest, indent=2)
 
             except Exception as e:
@@ -109,12 +115,37 @@ def run_generation():
                 continue
 
 
-    with open(config["generation_output_file"], "w", encoding="utf-8") as dest:
+    with open(f"data/evaluation/generation_results/train_dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
         json.dump(generation_results, dest, indent=2)
 
-    with open("data/evaluation/generation_failed.json", "w", encoding="utf-8") as dest:
+    with open(f"data/evaluation/failed_train_{config_name}_{counter}.json.json", "w", encoding="utf-8") as dest:
         json.dump(entries_failed, dest, indent=2)
 
 
+def main():
+    # parse args
+    args = parse_args()
+
+    # load env variable
+    load_dotenv(dotenv_path=args.env_file)
+
+    # load config
+    config = load_config(config_file=args.config_file)
+    config_name = os.path.basename(args.config_file).split(".")[0]
+
+    mlflow.set_experiment(experiment_name="generation")
+    
+    with mlflow.start_run(run_name=f"generation_{config_name}"): 
+
+        mlflow.log_params(config)
+        mlflow.log_artifact(local_path=args.env_file)
+        mlflow.log_artifact(local_path=config["retrieval_file"])
+
+        run_generation(config=config, config_name=config_name)
+
+        mlflow.log_artifact(local_path=config["generation_file"])
+
+
+
 if __name__ == "__main__":
-    run_generation()
+    main()
