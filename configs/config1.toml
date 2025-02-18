@@ -8,12 +8,12 @@ top_k = 10
 alpha = 0.5
 web_search_enabled = true
 inference_models = [
-    "gpt-4o-mini-2024-07-18",
-    "gpt-4o-2024-11-20",
+    #"gpt-4o-mini-2024-07-18",
+    #"gpt-4o-2024-11-20",
     #"deepseek-r1:14b",
     #"deepseek-r1:70b",
     #"llama3.1:70b",
-    #"llama3.1:8b",
+    "llama3.1:8b",
 ]
 temperature = 0.5
 with_context = true

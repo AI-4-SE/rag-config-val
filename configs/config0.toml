@@ -1,23 +1,15 @@
-index_name = "ada-index"
 embedding_model = "openai"
-embedding_dimension = 1536
-rerank = "sentence"
-top_n = 5
-num_websites = 3
-top_k = 10
-alpha = 0.5
 inference_models = [
-    "gpt-4o-mini-2024-07-18"
-    #"gpt-4o-2024-11-20",
-    #"deepseek-r1:14b",
-    #"deepseek-r1:70b",
-    #"llama3.1:70b",
-    #"llama3.1:8b",
-    #"phi4:latest"
+    "gpt-4o-mini-2024-07-18",
+    "gpt-4o-2024-11-20",
+    "deepseek-r1:14b",
+    "deepseek-r1:70b",
+    "llama3.1:70b",
+    "llama3.1:8b",
 ]
 temperature = 0.5
 with_context = false
 data_file = "data/evaluation/all_dependencies.csv"
-retrieval_output_file = "data/evaluation/retrieval_results/all_dependencies_config1.json"
-generation_output_file = "data/evaluation/generation_results/all_dependencies_config0.json"
+retrieval_file = "data/evaluation/retrieval_results/all_dependencies_config0.json"
+generation_file = "data/evaluation/generation_results/all_dependencies_config0.json"
 advanced = false
