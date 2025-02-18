@@ -1,60 +1,142 @@
-PiggyMetrics is a simple financial advisor app built to demonstrate the Microservice Architecture Pattern using Spring Boot, Spring Cloud, Maven, Docker, and Docker Compose. 
-It is decomposed into three core microservices, including a statistics, account, and notification service.
-Each microservice has its own database, with MongoDB being used the primary database for each service. 
-Overall, PiggyMetrics includes 9 Spring Boot modules, 4 MongoDB instances and a RabittMq.
+PiggyMetrics is a financial advisor application designed to demonstrate the Microservice Architecture Pattern using Spring Boot, Spring Cloud, and Docker.
+It consists of three independently deployable microservices, including an account, statistics and notifactions service.
 
-In the PiggyMetrics project, Maven's project inheritance is implemented by defining a parent module that contains shared dependencies, plugins, and configuration settings in a centralized POM file, which all other modules reference in their <parent> element. 
-Each module inherits these predefined configurations from the parent module, ensuring a consistent build environment and simplifying dependency management across the entire project. 
-However, in PiggyMetrics, each module specifies its own version, which overrides the inherited version from the parent.
+# Configuration Details
 
-The project structure of the first two levels of PiggyMetrics is as follows:
+- each microservice has its own MongoDB database, preventing direct database access across services
+- the parent POM contains shared dependencies, plugins, and configuration settings
+- each child module references the parent POM in the <parent> element, inheriting the shared configurations from the parent POM, ensuring a consistent build environment and simplifying dependency management across the entire project
+- however, each module specifies its own version, which overrides the inherited version from the parent
 
-piggymetrics/
-├── account-service/
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── auth-service/
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── config/
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── docker-compose.dev.yml
-├── docker-compose.yml
-├── gateway/
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── LICENCE
-├── mongodb/
-│   ├── Dockerfile
-│   ├── dump/
-│   └── init.sh
-├── monitoring/
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── notification-service/
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── pom.xml
-├── README.md
-├── registry/
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── statistics-service/
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-└── turbine-stream-service/
-    ├── Dockerfile
+# Simplified Directory Structure
+
+└── sqshq-piggymetrics/
+    ├── README.md
+    ├── LICENCE
+    ├── docker-compose.dev.yml
+    ├── docker-compose.yml
     ├── pom.xml
-    └── src/
+    ├── .travis.yml
+    ├── account-service/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── 
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.yml
+    │               └── bootstrap.yml
+    ├── auth-service/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       └── bootstrap.yml
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.yml
+    │               └── bootstrap.yml
+    ├── config/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       └── main/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.yml
+    │               └── shared/
+    │                   ├── account-service.yml
+    │                   ├── application.yml
+    │                   ├── auth-service.yml
+    │                   ├── gateway.yml
+    │                   ├── monitoring.yml
+    │                   ├── notification-service.yml
+    │                   ├── registry.yml
+    │                   ├── statistics-service.yml
+    │                   └── turbine-stream-service.yml
+    ├── gateway/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       ├── bootstrap.yml
+    │       │       └── static/..
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               └── bootstrap.yml
+    ├── mongodb/
+    │   ├── Dockerfile
+    │   ├── init.sh
+    │   └── dump/
+    │       └── account-service-dump.js
+    ├── monitoring/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       └── bootstrap.yml
+    │       └── test/
+    │           ├── java/..
+    │               └── bootstrap.yml
+    ├── notification-service/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       └── bootstrap.yml
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.yml
+    │               └── bootstrap.yml
+    ├── registry/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       └── main/
+    │           ├── java/..
+    │           └── resources/
+    │               └── bootstrap.yml
+    ├── statistics-service/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       └── bootstrap.yml
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.yml
+    │               └── bootstrap.yml
+    ├── turbine-stream-service/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       └── bootstrap.yml
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               └── bootstrap.yml
+    └── .github/
+        └── ISSUE_TEMPLATE/
+            └── bug-report-or-feature-request.md
+
 
 
 

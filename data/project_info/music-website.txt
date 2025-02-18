@@ -1,33 +1,64 @@
-Music-website a music streaming plattform, encompasing two core modules: the client and server.
-It is developed with Spring Boot, MyBatis, Maven, Docker, and Vue.
+The music-website project is an open-source music streaming platform that integrates a Vue.js-based front end with a Spring Boot and MyBatis back end. 
+It offers functionalities such as music playback, user authentication, playlist management, and administrative controls
+The project is organized into the following modules: music-client, music-manage, and music-server. 
 
-The project structure of the first two levels of music-website is as follows:
+# Configuration Details
 
-music-website/
-├── img/
-├── LICENSE
-├── music-client/
-│   ├── babel.config.js
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── public/
-│   ├── src/
-│   ├── tsconfig.json
-│   └── vue.config.js
-├── music-manage/
-│   ├── babel.config.js
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── public/
-│   ├── src/
-│   ├── tsconfig.json
-│   └── vue.config.js
-└── music-server/
-    ├── docker-server/
-    ├── docker-vue-client/
-    ├── docker-vue-manage/
-    ├── mvnw
-    ├── mvnw.cmd
-    ├── pom.xml
-    ├── sql/
-    └── src/
+- back-end module (music-server) includes configuration files (application.yml or application.properties) that define server settings, database connections, Redis configurations, and MinIO settings
+- pom.xml file in the music-server module specifies dependencies for Spring Boot, MyBatis, Redis, and other necessary libraries
+
+# Simplified Project Structure
+
+└── yin-hongwei-music-website/
+    ├── README.md
+    ├── LICENSE
+    ├── img/
+    ├── music-client/
+    │   ├── README.md
+    │   ├── babel.config.js
+    │   ├── package-lock.json
+    │   ├── package.json
+    │   ├── tsconfig.json
+    │   ├── vue.config.js
+    │   ├── .browserslistrc
+    │   ├── .eslintrc.js
+    │   ├── .gitignore
+    │   ├── public/..
+    │   └── src/..
+    ├── music-manage/
+    │   ├── README.md
+    │   ├── babel.config.js
+    │   ├── package-lock.json
+    │   ├── package.json
+    │   ├── tsconfig.json
+    │   ├── vue.config.js
+    │   ├── .browserslistrc
+    │   ├── .eslintrc.js
+    │   ├── .gitignore
+    │   ├── public/..
+    │   └── src/..
+    └── music-server/
+        ├── mvnw
+        ├── mvnw.cmd
+        ├── pom.xml
+        ├── .gitignore
+        ├── docker-server/
+        │   ├── docker-compose.yml
+        │   └── dockerfile
+        ├── docker-vue-client/
+        │   └── dockerfile
+        ├── docker-vue-manage/
+        │   └── dockerfile
+        ├── sql/..
+        └── src/
+            ├── main/
+            │   ├── java/..
+            │   └── resources/
+            │       ├── application-dev.properties
+            │       ├── application-prod.properties
+            │       ├── application.properties
+            │       ├── application.yml
+            │       ├── log4j.properties
+            │       └── mapper/..
+            └── test/..
+

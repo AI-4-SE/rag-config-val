@@ -1,55 +1,215 @@
-Spring-boot-admin is a monitoring tool that aims to visualize information provided by Spring Boot Actuators in a nice and accessible way. 
+Spring Boot Admin is an open-source community project that provides an administrative user interface for managing and monitoring Spring Boot applications. 
 It consists of two major parts: a server that provides a user interface to display and interact with Spring Boot Actuator and client that is used to register at the server and allow to access actuator endpoints 
 
-In the spring-boot-admin project, Maven's project inheritance is implemented by defining a parent module that contains shared dependencies, plugins, and configuration settings in a centralized POM file, which all other modules reference in their <parent> element. 
-Each module inherits these predefined configurations from the parent module, ensuring a consistent build environment and simplifying dependency management across the entire project.
+# Configuration Details
 
-The project structure of the first two levels of spring-boot-admin is as follows:
+- each module contains application.yml or application.properties files for configuration, allowing customization of server settings, security credentials, and other properties
+- the root pom.xml file serves as the parent configuration, defining shared dependencies and build settings
+- individual modules have their own pom.xml files, but inherit shared configuration from the parent pom.xml
 
-spring-boot-admin/
-├── pom.xml
-├── spring-boot-admin-build/
-│   └── pom.xml
-├── spring-boot-admin-client/
-│   ├── pom.xml
-│   └── src/
-├── spring-boot-admin-dependencies/
-│   └── pom.xml
-├── spring-boot-admin-docs/
-│   ├── pom.xml
-│   └── src/
-├── spring-boot-admin-samples/
-│   ├── pom.xml
-│   ├── spring-boot-admin-sample-consul/
-│   ├── spring-boot-admin-sample-custom-ui/
-│   ├── spring-boot-admin-sample-eureka/
-│   ├── spring-boot-admin-sample-hazelcast/
-│   ├── spring-boot-admin-sample-reactive/
-│   ├── spring-boot-admin-sample-servlet/
-│   ├── spring-boot-admin-sample-servlet-graalvm/
-│   ├── spring-boot-admin-sample-war/
-│   └── spring-boot-admin-sample-zookeeper/
-├── spring-boot-admin-server/
-│   ├── pom.xml
-│   └── src/
-├── spring-boot-admin-server-cloud/
-│   ├── pom.xml
-│   └── src/
-├── spring-boot-admin-server-ui/
-│   ├── babel.config.js
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── pom.xml
-│   ├── postcss.config.js
-│   ├── src/
-│   ├── tailwind.config.js
-│   ├── tsconfig.json
-│   ├── tsconfig.node.json
-│   └── vite.config.mts
-├── spring-boot-admin-starter-client/
-│   └── pom.xml
-├── spring-boot-admin-starter-server/
-│   └── pom.xml
-└── src/
-    ├── checkstyle/
-    └── main/
+# Simplified Project Structure
+
+└── codecentric-spring-boot-admin/
+    ├── README.md
+    ├── CONTRIBUTING.md
+    ├── LICENSE.txt
+    ├── lombok.config
+    ├── mvnw
+    ├── mvnw.cmd
+    ├── pom.xml
+    ├── renovate.json
+    ├── .editorconfig
+    ├── .gnupg.tar.enc
+    ├── images/
+    ├── spring-boot-admin-build/
+    │   └── pom.xml
+    ├── spring-boot-admin-client/
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       └── META-INF/
+    │       │           ├── additional-spring-configuration-metadata.json
+    │       │           └── spring/..
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               └── logback-test.xml
+    ├── spring-boot-admin-dependencies/
+    │   └── pom.xml
+    ├── spring-boot-admin-docs/
+    │   ├── pom.xml
+    │   └── src/
+    │       └── site/..
+    ├── spring-boot-admin-samples/
+    │   ├── pom.xml
+    │   ├── spring-boot-admin-sample-consul/
+    │   │   ├── docker-compose.yml
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       ├── main/
+    │   │       │   ├── java/..
+    │   │       │   └── resources/
+    │   │       │       ├── application-dev.yml
+    │   │       │       ├── application-insecure.yml
+    │   │       │       ├── application-secure.yml
+    │   │       │       └── application.yml
+    │   │       └── test/..
+    │   ├── spring-boot-admin-sample-custom-ui/
+    │   │   ├── README.md
+    │   │   ├── babel.config.js
+    │   │   ├── package-lock.json
+    │   │   ├── package.json
+    │   │   ├── pom.xml
+    │   │   ├── vite.config.js
+    │   │   ├── .gitignore
+    │   │   └── src/..
+    │   ├── spring-boot-admin-sample-eureka/
+    │   │   ├── docker-compose.yml
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       ├── main/
+    │   │       │   ├── docker/
+    │   │       │   │   └── Dockerfile
+    │   │       │   ├── java/..
+    │   │       │   └── resources/
+    │   │       │       ├── application-dev.yml
+    │   │       │       ├── application-insecure.yml
+    │   │       │       ├── application-secure.yml
+    │   │       │       └── application.yml
+    │   │       └── test/..
+    │   ├── spring-boot-admin-sample-hazelcast/
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       ├── main/
+    │   │       │   ├── java/..
+    │   │       │   └── resources/
+    │   │       │       ├── application-dev.yml
+    │   │       │       ├── application-insecure.yml
+    │   │       │       ├── application-secure.yml
+    │   │       │       └── application.yml
+    │   │       └── test/..
+    │   ├── spring-boot-admin-sample-reactive/
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       ├── main/
+    │   │       │   ├── java/..
+    │   │       │   └── resources/
+    │   │       │       ├── application-dev.yml
+    │   │       │       ├── application-insecure.yml
+    │   │       │       ├── application-secure.yml
+    │   │       │       └── application.yml
+    │   │       └── test/..
+    │   ├── spring-boot-admin-sample-servlet/
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       ├── main/
+    │   │       │   ├── java/..
+    │   │       │   └── resources/
+    │   │       │       ├── application-dev.yml
+    │   │       │       ├── application-insecure.yml
+    │   │       │       ├── application-secure.yml
+    │   │       │       ├── application-themed.yml
+    │   │       │       └── application.yml
+    │   │       └── test/..
+    │   ├── spring-boot-admin-sample-servlet-graalvm/
+    │   │   ├── Readme.md
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               └── application.yml
+    │   ├── spring-boot-admin-sample-war/
+    │   │   ├── pom.xml
+    │   │   ├── .gitignore
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               ├── application-dev.yml
+    │   │               ├── application-insecure.yml
+    │   │               ├── application-secure.yml
+    │   │               └── application.yml
+    │   └── spring-boot-admin-sample-zookeeper/
+    │       ├── docker-compose.yml
+    │       ├── pom.xml
+    │       └── src/
+    │           ├── main/
+    │           │   ├── java/..
+    │           │   └── resources/
+    │           │       └── application.yml
+    │           └── test/..
+    ├── spring-boot-admin-server/
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       └── META-INF/
+    │       │           ├── additional-spring-configuration-metadata.json
+    │       │           ├── spring/..
+    │       │           └── spring-boot-admin-server/..
+    │       └── test/..
+    │           └── resources/
+    │               ├── application.yml
+    │               ├── logback-test.xml
+    │               ├── server-config-test.properties
+    │               └── de/..
+    ├── spring-boot-admin-server-cloud/
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       └── META-INF/
+    │       │           ├── additional-spring-configuration-metadata.json
+    │       │           └── spring/..
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               └── logback-test.xml
+    ├── spring-boot-admin-server-ui/
+    │   ├── README.md
+    │   ├── babel.config.js
+    │   ├── package-lock.json
+    │   ├── package.json
+    │   ├── pom.xml
+    │   ├── postcss.config.js
+    │   ├── tailwind.config.js
+    │   ├── tsconfig.json
+    │   ├── tsconfig.node.json
+    │   ├── vite.config.mts
+    │   ├── .eslintrc.js
+    │   ├── .gitignore
+    │   ├── .npmrc
+    │   ├── .nvmrc
+    │   ├── .prettierrc.json
+    │   ├── src/
+    │   │   ├── main/
+    │   │   │   ├── frontend/..
+    │   │   │   ├── java/..
+    │   │   │   └── resources/..
+    │   │   └── test/..
+    │   └── .storybook/..
+    ├── spring-boot-admin-starter-client/
+    │   └── pom.xml
+    ├── spring-boot-admin-starter-server/
+    │   └── pom.xml
+    ├── src/..
+    ├── .github/
+    │   ├── CODEOWNERS
+    │   ├── release.yml
+    │   ├── ISSUE_TEMPLATE/..
+    │   └── workflows/
+    │       ├── build-feature.yml
+    │       ├── build-main.yml
+    │       ├── deploy-documentation.yml
+    │       ├── release-to-maven-central.yml
+    │       └── vulnerability-scan.yml
+    └── .mvn/
+        └── wrapper/
+            ├── MavenWrapperDownloader.java
+            └── maven-wrapper.properties
+

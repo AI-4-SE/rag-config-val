@@ -1,48 +1,157 @@
-The JetLinks Community project represents a modular and comprehensive IoT platform developed with Spring Boot, Spring Webflus, ElasticSearch, PostgreSQL, Maven, Docker, and Docker-Compose. 
+JetLinks is an open-source, enterprise-grade IoT platform developed using Spring Boot, Spring Webflus, ElasticSearch, PostgreSQL, Maven, Docker, and Docker-Compose
+Key features include real-time data processing, device alarms, message notifications, data forwarding, geolocation services, and data visualization, empowering rapid development of IoT-related business systems.
+The JetLinks project is organized into several modules.
 
-In the jetlinks-community project, Maven's project inheritance is implemented by defining a parent module that contains shared dependencies, plugins, and configuration settings in a centralized POM file, which all other modules reference in their <parent> element. 
-Each module inherits these predefined configurations from the parent module, ensuring a consistent build environment and simplifying dependency management across the entire project.
+# Configuration Details
 
-The project structure of the first two levels of jetlinks-community is as follows:
+- each module includes application.yml or bootstrap.yml files for configuring properties such as server settings, database connections, and logging levels
+- there is a parent POM in the root directory, which serves as the parent configuration, with individual modules containing their own pom.xml files to manage specific dependencies and plugins
 
-TOjetlinks-community/
-├── docker/
-│   ├── dev-env/
-│   └── run-all/
-├── jetlinks-components/ # provides jetlinks modules
-│   ├── common-component/
-│   ├── configure-component/
-│   ├── dashboard-component/
-│   ├── elasticsearch-component/
-│   ├── gateway-component/
-│   ├── io-component/
-│   ├── logging-component/
-│   ├── network-component/
-│   ├── notify-component/
-│   ├── pom.xml
-│   ├── protocol-component/
-│   ├── relation-component/
-│   ├── rule-engine-component/
-│   ├── script-component/
-│   ├── tdengine-component/
-│   ├── things-component/
-│   └── timeseries-component/
-├── jetlinks-manager/ # provides jetlinks management modules
-│   ├── authentication-manager/
-│   ├── device-manager/
-│   ├── logging-manager/
-│   ├── network-manager/
-│   ├── notify-manager/
-│   ├── pom.xml
-│   └── rule-engine-manager/
-├── jetlinks-standalone/ # module for service startup and managing the standalone deployment
-│   ├── docker-entrypoint.sh
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── pom.xml
-└── simulator/ # device simulator for testing and development purposes
-    ├── device-simulator.jar
-    ├── history/
-    ├── mqtt/
-    └── start.shDO
+# Simplified Directory Structure
+
+└── jetlinks-jetlinks-community/
+    ├── README.md
+    ├── LICENSE
+    ├── build-and-push-docker.sh
+    ├── mvnw
+    ├── mvnw.cmd
+    ├── pom.xml
+    ├── run.sh
+    ├── .editorconfig
+    ├── docker/
+    │   ├── dev-env/
+    │   │   └── docker-compose.yml
+    │   └── run-all/
+    │       └── docker-compose.yml
+    ├── idea/..
+    ├── jetlinks-components/
+    │   ├── pom.xml
+    │   ├── common-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── configure-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── dashboard-component/
+    │   │   ├── README.md
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── elasticsearch-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── gateway-component/
+    │   │   ├── README.md
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── io-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── logging-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── network-component/
+    │   │   ├── pom.xml
+    │   │   ├── http-component/
+    │   │   │   ├── pom.xml
+    │   │   │   └── src/..
+    │   │   ├── mqtt-component/
+    │   │   │   ├── pom.xml
+    │   │   │   └── src/..
+    │   │   ├── network-core/
+    │   │   │   ├── pom.xml
+    │   │   │   └── src/..
+    │   │   └── tcp-component/
+    │   │       ├── pom.xml
+    │   │       └── src/..
+    │   ├── notify-component/
+    │   │   ├── pom.xml
+    │   │   ├── notify-core/
+    │   │   │   ├── pom.xml
+    │   │   │   └── src/..
+    │   │   ├── notify-dingtalk/
+    │   │   │   ├── pom.xml
+    │   │   │   └── src/..
+    │   │   ├── notify-email/
+    │   │   │   ├── pom.xml
+    │   │   │   └── src/..
+    │   │   ├── notify-sms/
+    │   │   │   ├── pom.xml
+    │   │   │   └── src/..
+    │   │   ├── notify-voice/
+    │   │   │   ├── pom.xml
+    │   │   │   └── src/..
+    │   │   ├── notify-webhook/
+    │   │   │   ├── pom.xml
+    │   │   │   └── src/..
+    │   │   └── notify-wechat/
+    │   │       ├── pom.xml
+    │   │       └── src/..
+    │   ├── protocol-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── relation-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── rule-engine-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── script-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── tdengine-component/
+    │   │   ├── docker-compose.yml
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── things-component/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   └── timeseries-component/
+    │       ├── pom.xml
+    │       └── src/..
+    │   ├── pom.xml
+    │   ├── authentication-manager/
+    │   │   ├── README.md
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── device-manager/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── logging-manager/
+    │   │   ├── pom.xml
+    │   │   ├── .gitignore
+    │   │   └── src/..
+    │   ├── network-manager/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── notify-manager/
+    │   │   ├── README.md
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   └── rule-engine-manager/
+    │       ├── pom.xml
+    │       ├── .gitignore
+    │       └── src/..
+    ├── jetlinks-standalone/
+    │   ├── Dockerfile
+    │   ├── docker-entrypoint.sh
+    │   ├── pom.xml
+    │   └── src/
+    │       └── main/..
+    │           └── resources/
+    │               ├── application-embedded.yml
+    │               ├── application.yml
+    │               ├── banner.txt
+    │               ├── hsweb-starter.js
+    │               ├── index.html
+    │               └── logback-spring.xml
+    ├── simulator/
+    │   ├── start.sh
+    │   ├── history/..
+    │   └── mqtt/..
+    ├── .github/
+    │   └── workflows/
+    │       ├── maven.yml
+    │       └── pull_request.yml
+    └── .mvn/
+        └── wrapper/
+            └── maven-wrapper.properties

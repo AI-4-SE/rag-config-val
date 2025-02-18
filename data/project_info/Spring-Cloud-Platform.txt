@@ -1,34 +1,104 @@
-Spring-Cloud-Platform is a microservice development platform based on Spring Cloud, featuring a unified authorization and authentication backend management system. 
-It includes multiple modules such as user management, resource and permission management, and gateway API management 
-The core technologies used are Spring Boot, Spring Cloud, and Spring Cloud Alibaba, Maven, Docker, and Docker-Compose.
+The Spring-Cloud-Platform is an open-source microservices-based RBAC (Role-Based Access Control) management platform designed to facilitate rapid enterprise development.
+It leverages core technologies such as Spring Boot 2.4.1, Spring Cloud 2020.0.0, and Spring Cloud Alibaba 2.2.4, Maven , Docker, and Docker Compose. 
+The project is organized into several key modules.
 
-In the Spring-Cloud-Platform project, Maven's project inheritance is implemented by defining a parent module that contains shared dependencies, plugins, and configuration settings in a centralized POM file, which all other modules reference in their <parent> element. 
-Each module inherits these predefined configurations from the parent module, ensuring a consistent build environment and simplifying dependency management across the entire project.
+# Configuration Details
 
-The project structure of the first two levels of Spring-Cloud-Platform is as follows:
+- includes a docker-compose.yml file, facilitating the deployment of services in a containerized environment
+- each module contains its own application.yml or application.properties file, specifying configurations such as server ports, database connections, and security settings
+- the root pom.xml file serves as the parent configuration, defining shared dependencies and build settings
+- individual modules have their own pom.xml files, but inherit shared configurations from the parent pom.xml
 
-Spring-Cloud-Platform/
-├── ace-api/ # Common data transfer object for cross-service calls
-│   ├── pom.xml
-│   └── src/
-├── ace-dev-base/ # general scaffolding
-│   ├── ace-auth-sdk/
-│   ├── ace-common/
-│   └── pom.xml
-├── ace-gate/ # Gateway load center
-│   ├── pom.xml
-│   └── src/
-├── ace-infrastructure/ # Operations and maintenance center
-│   ├── ace-monitor/
-│   ├── ace-nacos/
-│   ├── ace-sentinel/
-│   └── pom.xml
-├── ace-modules/ # Common service modules
-│   ├── ace-admin/
-│   ├── ace-generator/
-│   ├── ace-nlp/
-│   ├── ace-sample/
-│   ├── ace-tool/
-│   └── pom.xml
-├── docker-compose.yml
-└── pom.xml
+# Simplified Project Structure
+
+└── wxiaoqi-spring-cloud-platform/
+    ├── README.md
+    ├── LICENSE
+    ├── dev-doc.md
+    ├── docker-compose.yml
+    ├── dump.rdb
+    ├── pom.xml
+    ├── ace-api/
+    │   ├── pom.xml
+    │   └── src/..
+    │   ├── pom.xml
+    │   ├── ace-auth-sdk/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   └── ace-common/
+    │       ├── pom.xml
+    │       └── src/..
+    ├── ace-gate/
+    │   ├── pom.xml
+    │   └── src/
+    │       └── main/
+    │           ├── docker/
+    │           │   └── Dockerfile
+    │           ├── java/..
+    │           └── resources/
+    │               └── application.yml
+    ├── ace-infrastructure/
+    │   ├── pom.xml
+    │   ├── ace-monitor/
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── docker/
+    │   │           │   └── Dockerfile
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               └── application.yml
+    │   ├── ace-nacos/
+    │   │   ├── nacos-server-1.1.4.zip
+    │   │   ├── db/
+    │   │   │   └── init_nacos.sql
+    │   │   └── nacos/..
+    │   └── ace-sentinel/
+    ├── ace-modules/
+    │   ├── pom.xml
+    │   ├── ace-admin/
+    │   │   ├── pom.xml
+    │   │   ├── db/
+    │   │   │   └── init.sql
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── docker/
+    │   │           │   ├── Dockerfile
+    │   │           │   └── wait-for-it.sh
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               ├── application.yml
+    │   │               ├── logback.xml
+    │   │               ├── builder/..
+    │   │               └── mapper/..
+    │   ├── ace-generator/
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── db/
+    │   │           │   └── cloud_sample.sql
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               ├── application.yml
+    │   │               ├── generator.properties
+    │   │               ├── mapper/..
+    │   │               └── template/..
+    │   ├── ace-nlp/
+    │   │   └── pom.xml
+    │   ├── ace-sample/
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               ├── application.yml
+    │   │               └── mapper/..
+    │   └── ace-tool/
+    │       ├── pom.xml
+    │       └── src/
+    │           └── main/
+    │               ├── java/..
+    │               └── resources/
+    │                   ├── application.yml
+    │                   └── bootstrap.yml
+    └── alibaba-base/..

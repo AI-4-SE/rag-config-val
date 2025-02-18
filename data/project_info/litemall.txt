@@ -1,82 +1,150 @@
-Litemall is a simple shopping mall system that implements a complete frontend and backend project based on existing open source projects, such as Spring Boot, MyBatis, MySQL, Maven, Vue, Docker, and Docker Compose.
-The architecture of the project consists of four systems, nine modules, and one backend database.
+Litemall is an open-source e-commerce platform that integrates multiple components to deliver a comprehensive online shopping experience. 
+The platform comprises a Spring Boot-based backend, Vue.js-based admin front end, WeChat Mini Program for user interaction, and a Vue.js-based mobile user front end. 
+The architecture of the Litemall consists of four systems, nine modules, and one backend database.
 
-In the litemall project, Maven's project inheritance is implemented by defining a parent module that contains shared dependencies, plugins, and configuration settings in a centralized POM file, which all other modules reference in their <parent> element. 
-Each module inherits these predefined configurations from the parent module, ensuring a consistent build environment and simplifying dependency management across the entire project.
+# Configuration Details
 
-The project structure of the first two levels of litemall is as follows:
+- employs MyBatis for object-relational mapping, streamlining database operations and ensuring efficient data management
+- exposes RESTful APIs, facilitating seamless communication between the server and various front-end components
+- each backend module includes an application.yml, defining properties such as server ports, database connections, and other environment-specific settings
+- employs Maven for build automation and dependency management
+- the root pom.xml file serves as the parent configuration, with individual modules containing their own pom.xml files to manage module-specific dependencies and plugins
 
-litemall/
-├── deploy/
-│   ├── bin/
-│   ├── db/
-│   ├── litemall/
-│   └── util/
-├── docker/
-│   ├── bin/
-│   ├── db/
-│   ├── docker-compose.yml
-│   ├── litemall/
-│   └── util/
-├── litemall-admin/ # management of frontend modules
-│   ├── babel.config.js
-│   ├── build/
-│   ├── jest.config.js
-│   ├── jsconfig.json
-│   ├── package.json
-│   ├── postcss.config.js
-│   ├── public/
-│   ├── src/
-│   └── vue.config.js
-├── litemall-admin-api/ # background service module of the administration
-│   ├── pom.xml
-│   └── src/
-├── litemall-all/
-│   ├── pom.xml
-│   └── src/
-├── litemall-all-war/
-│   ├── pom.xml
-│   └── src/
-├── litemall-core/ # provides general services
-│   ├── pom.xml
-│   └── src/
-├── litemall-db/ # provides database access services
-│   ├── mybatis-generator/
-│   ├── pom.xml
-│   ├── sql/
-│   └── src/
-├── litemall-vue/ # frontend module
-│   ├── babel.config.js
-│   ├── package.json
-│   ├── public/
-│   ├── src/
-│   └── vue.config.js
-├── litemall-wx/
-│   ├── app.js
-│   ├── app.json
-│   ├── app.wxss
-│   ├── config/
-│   ├── lib/
-│   ├── pages/
-│   ├── project.config.json
-│   ├── project.private.config.json
-│   ├── sitemap.json
-│   ├── static/
-│   └── utils/
-├── litemall-wx-api/
-│   ├── pom.xml
-│   └── src/
-├── pom.xml
-└── renard-wx/
-    ├── app.js
-    ├── app.json
-    ├── app.wxss
-    ├── components/
-    ├── config/
-    ├── images/
-    ├── lib/
-    ├── pages/
-    ├── project.config.json
-    ├── sitemap.json
-    ├── static/
-    └── utils/
+# Simplified Directory Structure
+
+└── linlinjava-litemall/
+    ├── README.md
+    ├── CHANGELOG.md
+    ├── CONTRIBUTE.md
+    ├── LICENSE
+    ├── SECURITY.md
+    ├── pom.xml
+    ├── .gitbook.yaml
+    ├── deploy/..
+    ├── doc/..
+    │   ├── conf/
+    │   │   └── nginx.conf
+    │   ├── pics/..
+    │   └── unused/
+    ├── docker/
+    │   ├── README.md
+    │   ├── docker-compose.yml
+    │   ├── .gitignore
+    │   ├── bin/..
+    │   ├── db/
+    │   │   ├── conf.d/
+    │   │   │   └── my.cnf
+    │   │   ├── data/
+    │   │   │   └── .gitkeep
+    │   │   └── init-sql/
+    │   │       └── .gitkeep
+    │   ├── litemall/
+    │   │   ├── Dockerfile
+    │   │   ├── application.yml
+    │   │   └── .gitkeep
+    │   └── util/..
+    ├── litemall-admin/..
+    │   ├── build/..
+    │   ├── public/..
+    │   └── src/..
+    ├── litemall-admin-api/
+    │   ├── pom.xml
+    │   ├── .gitignore
+    │   └── src/
+    │       ├── main/..
+    │       │   └── resources/
+    │       │       ├── application-admin.yml
+    │       │       └── application.yml
+    │       └── test/..
+    ├── litemall-all/
+    │   ├── pom.xml
+    │   ├── .gitignore
+    │   └── src/
+    │       ├── main/..
+    │       │   └── resources/
+    │       │       ├── application.yml
+    │       │       └── logback-spring.xml
+    │       └── test/..
+    ├── litemall-all-war/
+    │   ├── pom.xml
+    │   ├── .gitignore
+    │   └── src/..
+    │           └── resources/
+    │               ├── application.yml
+    │               └── logback-spring.xml
+    ├── litemall-core/
+    │   ├── pom.xml
+    │   ├── .gitignore
+    │   └── src/
+    │       ├── main/..
+    │       │   └── resources/
+    │       │       ├── application-core.yml
+    │       │       └── application.yml
+    │       └── test/..
+    ├── litemall-db/
+    │   ├── pom.xml
+    │   ├── .gitignore
+    │   ├── mybatis-generator/..
+    │   ├── sql/..
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       ├── application-db.yml
+    │       │       ├── application.yml
+    │       │       └── org/..
+    │       └── test/..
+    ├── litemall-vue/
+    │   ├── babel.config.js
+    │   ├── package.json
+    │   ├── vue.config.js
+    │   ├── .env.deployment
+    │   ├── .env.development
+    │   ├── .env.production
+    │   ├── .eslintrc.js
+    │   ├── .gitignore
+    │   ├── .postcssrc.js
+    │   ├── .prettierrc.js
+    │   ├── public/..
+    │   └── src/..
+    ├── litemall-wx/
+    │   ├── app.js
+    │   ├── app.json
+    │   ├── app.wxss
+    │   ├── project.config.json
+    │   ├── project.private.config.json
+    │   ├── sitemap.json
+    │   ├── config/..
+    │   ├── lib/..
+    │   ├── pages/..
+    │   ├── static/..
+    │   └── utils/..
+    ├── litemall-wx-api/
+    │   ├── pom.xml
+    │   ├── .gitignore
+    │   └── src/
+    │       ├── main/..
+    │       │   └── resources/
+    │       │       ├── application-wx.yml
+    │       │       └── application.yml
+    │       └── test/..
+    ├── renard-wx/
+    │   ├── app.js
+    │   ├── app.json
+    │   ├── app.wxss
+    │   ├── project.config.json
+    │   ├── sitemap.json
+    │   ├── components/..
+    │   ├── config/..
+    │   ├── images/..
+    │   ├── lib/..
+    │   ├── pages/..
+    │   ├── static/..
+    │   └── utils/..
+    ├── .github/
+    │   └── workflows/
+    │       └── main.yml
+    └── .workflow/
+        ├── BranchPipeline.yml
+        ├── MasterPipeline.yml
+        └── PRPipeline.yml

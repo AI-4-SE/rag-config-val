@@ -1,57 +1,185 @@
-Pig is a microservice developed with modern and popular technologies, such as Spring Boot, Spring Cloud, Maven, MySQL, Docker, and Docker Compose. 
+Pig is an open-source RBAC (Role-Based Access Control) permission management system designed for rapid enterprise development. 
+It is built upon Spring Cloud 2024, Spring Boot 3.4, and OAuth2, offering flexibility to support both microservices and monolithic architectures. 
 
-In the pig project, Maven's project inheritance is implemented by defining a parent module that contains shared dependencies, plugins, and configuration settings in a centralized POM file, which all other modules reference in their <parent> element. 
-Each module inherits these predefined configurations from the parent module, ensuring a consistent build environment and simplifying dependency management across the entire project. 
-However, in pig, each module specifies its own version, which overrides the inherited version from the parent.
+# Configuration Details
 
-The project structure of the first two levels of pig is as follows:
+- includes Docker support, enabling containerized deployment for consistent environments across development and production
+- includes a docker-compose.yml file, facilitating the setup of multi-container applications
+- each module contains its own application.yml or application.properties file, specifying configurations such as server ports, database connections, and security settings
+- the root pom.xml file serves as the parent configuration, defining shared dependencies and build settings
+- individual modules have their own pom.xml files, but inherit shared configurations from the parent pom.xml 
+- each module specifies its own version in its pom.xml, which overrides the inherited version from the parent pom.xml
 
-pig/
-├── db/
-│   ├── Dockerfile
-│   ├── pig.sql
-│   └── pig_config.sql
-├── docker-compose.yml
-├── pig-auth/ # Authorization service provider
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── pig-boot/ # The launcher for standalone mode
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── pig-common/ # Common system modules encompassing several sub-modules
-│   ├── pig-common-bom/
-│   ├── pig-common-core/
-│   ├── pig-common-datasource/
-│   ├── pig-common-feign/
-│   ├── pig-common-log/
-│   ├── pig-common-mybatis/
-│   ├── pig-common-oss/
-│   ├── pig-common-seata/
-│   ├── pig-common-security/
-│   ├── pig-common-swagger/
-│   ├── pig-common-xss/
-│   └── pom.xml
-├── pig-gateway/ # Spring Cloud Gateway for API gateway management
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── pig-register/ # Nacos Server for service registration and discovery
-│   ├── Dockerfile
-│   ├── pom.xml
-│   └── src/
-├── pig-upms/ # General user and permission management module with two sub-components
-│   ├── pig-upms-api/
-│   ├── pig-upms-biz/
-│   └── pom.xml
-├── pig-visual/ # Modules for visualization and monitoring purposes
-│   ├── pig-codegen/
-│   ├── pig-monitor/
-│   ├── pig-quartz/
-│   └── pom.xml
-├── pom.xml
-└── README.md
+# Simplified Project Structure
+
+└── pig-mesh-pig/
+    ├── README.md
+    ├── LICENSE
+    ├── docker-compose.yml
+    ├── pom.xml
+    ├── .editorconfig
+    ├── db/
+    │   ├── Dockerfile
+    │   ├── pig.sql
+    │   └── pig_config.sql
+    ├── pig-auth/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       └── main/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.yml
+    │               ├── logback-spring.xml
+    │               └── templates/..
+    ├── pig-boot/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       └── main/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application-dev.yml
+    │               ├── application.yml
+    │               └── logback-spring.xml
+    ├── pig-common/
+    │   ├── pom.xml
+    │   ├── pig-common-bom/
+    │   │   └── pom.xml
+    │   ├── pig-common-core/
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               ├── banner.txt
+    │   │               ├── logback-spring.xml
+    │   │               ├── META-INF/..
+    │   │               └── i18n/..
+    │   ├── pig-common-datasource/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── pig-common-excel/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── pig-common-feign/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── pig-common-log/
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               └── META-INF/
+    │   │                   ├── spring-configuration-metadata.json
+    │   │                   ├── spring.factories
+    │   │                   └── spring/..
+    │   ├── pig-common-mybatis/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── pig-common-seata/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── pig-common-security/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── pig-common-swagger/
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               └── openapi-config.yaml
+    │   └── pig-common-xss/
+    │       ├── pom.xml
+    │       └── src/
+    │           └── main/
+    │               ├── java/..
+    │               └── resources/
+    │                   └── META-INF/
+    │                       ├── spring-configuration-metadata.json
+    │                       └── spring/..
+    ├── pig-gateway/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       └── main/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.yml
+    │               └── logback-spring.xml
+    ├── pig-register/
+    │   ├── Dockerfile
+    │   ├── pom.xml
+    │   └── src/
+    │       └── main/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.yml
+    │               ├── nacos-version.txt
+    │               ├── META-INF/..
+    │               └── static/..
+    ├── pig-upms/
+    │   ├── pom.xml
+    │   ├── pig-upms-api/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   └── pig-upms-biz/
+    │       ├── Dockerfile
+    │       ├── pom.xml
+    │       └── src/
+    │           └── main/
+    │               ├── java/..
+    │               └── resources/
+    │                   ├── application.yml
+    │                   ├── logback-spring.xml
+    │                   ├── file/..
+    │                   └── mapper/..
+    ├── pig-visual/
+    │   ├── pom.xml
+    │   ├── pig-codegen/
+    │   │   ├── Dockerfile
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               ├── application.yml
+    │   │               ├── logback-spring.xml
+    │   │               └── mapper/..
+    │   ├── pig-monitor/
+    │   │   ├── Dockerfile
+    │   │   ├── pom.xml
+    │   │   └── src/
+    │   │       └── main/
+    │   │           ├── java/..
+    │   │           └── resources/
+    │   │               ├── application.yml
+    │   │               └── logback-spring.xml
+    │   └── pig-quartz/
+    │       ├── Dockerfile
+    │       ├── pom.xml
+    │       └── src/
+    │           └── main/
+    │               ├── java/..
+    │               └── resources/
+    │                   ├── application.yml
+    │                   ├── logback-spring.xml
+    │                   └── quartz-config.yml
+    ├── .gitee/
+    │   └── ISSUE_TEMPLATE/
+    │       ├── config.yml
+    │       └── issue.yml
+    └── .github/
+        ├── renovate.json
+        └── workflows/
+            ├── github-release.yml
+            ├── image.yml
+            ├── maven.yml
+            └── mirror.yml
 
 
 

@@ -1,62 +1,209 @@
-Apollo is a reliable configuration management system, suitable for microservice configuration management scenarios.
-The server side is developed based on Spring Boot, Spring Cloud, Maven, Docker, and Docker-Compose.
-It is decomposed into 4 modules, including and admin service, meta server, a portal, and a client.
-The primary database in Apollo is MySQL.
+Apollo is a robust configuration management system designed for centralized management of configurations across diverse applications and clusters, particularly suited for microservice architectures. 
+It enables real-time configuration updates, version control, and supports features like gray releases and role-based access control. 
+The Apollo project is organized into several key modules, including and admin service, meta server, a portal, and a client.
 
-In the Apollo project, Maven's project inheritance is implemented by defining a parent module that contains shared dependencies, plugins, and configuration settings in a centralized POM file, which all other modules reference in their <parent> element. 
-Each module inherits these predefined configurations from the parent module, ensuring a consistent build environment and simplifying dependency management across the entire project.
+# Configuration Details
 
-The project structure of the first two levels of apollo is as follows:
+- a parent POM specified in the root directory contains shared dependencies, plugins, and configuration settings 
+- each module within Apollo has its own pom.xml file, inheriting from the parent POM
+- the primary database in Apollo is MySQL 
+- server-side components are developed using Spring Boot, Spring Cloud, Maven, Docker, and Docker-Compose
 
-apollo/
-├── apollo-adminservice/
-│   ├── pom.xml
-│   └── src/
-├── apollo-assembly/
-│   ├── pom.xml
-│   └── src/
-├── apollo-audit/
-│   ├── apollo-audit-annotation/
-│   ├── apollo-audit-api/
-│   ├── apollo-audit-impl/
-│   ├── apollo-audit-spring-boot-starter/
-│   └── pom.xml
-├── apollo-biz/
-│   ├── pom.xml
-│   └── src/
-├── apollo-build-sql-converter/
-│   ├── pom.xml
-│   └── src/
-├── apollo-buildtools/
-│   ├── pom.xml
-│   ├── src/
-│   └── style/
-├── apollo-common/
-│   ├── pom.xml
-│   └── src/
-├── apollo-configservice/
-│   ├── pom.xml
-│   └── src/
-├── apollo-portal/
-│   ├── pom.xml
-│   └── src/
-├── changes/
-├── doc/
-│   └── images/
-├── docs/
-│   ├── charts/
-│   ├── CNAME
-│   ├── css/
-│   ├── en/
-│   ├── index.html
-│   ├── scripts/
-│   └── zh/
-├── LICENSE
-├── mvnw
-├── mvnw.cmd
-├── pom.xml
-└── scripts/
-    ├── build.bat
-    ├── build.sh
-    ├── openapi/
-    └── sql/
+# Simplified Directory Structure
+
+└── apolloconfig-apollo/
+    ├── README.md
+    ├── CHANGES.md
+    ├── CODE_OF_CONDUCT.md
+    ├── CONTRIBUTING.md
+    ├── GOVERNANCE.md
+    ├── LICENSE
+    ├── SECURITY.md
+    ├── mvnw
+    ├── mvnw.cmd
+    ├── pom.xml
+    ├── .licenserc.yaml
+    ├── apollo-adminservice/
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── assembly/
+    │       ├── main/
+    │       │   ├── docker/
+    │       │   │   └── Dockerfile
+    │       │   ├── java/..
+    │       │   ├── resources/
+    │       │   │   ├── adminservice.properties
+    │       │   │   ├── apollo-adminservice.conf
+    │       │   │   ├── application-consul-discovery.properties
+    │       │   │   ├── application-custom-defined-discovery.properties
+    │       │   │   ├── application-database-discovery.properties
+    │       │   │   ├── application-github.properties
+    │       │   │   ├── application-kubernetes.properties
+    │       │   │   ├── application-nacos-discovery.properties
+    │       │   │   ├── application-zookeeper-discovery.properties
+    │       │   │   ├── application.properties
+    │       │   │   ├── application.yml
+    │       │   │   └── logback.xml
+    │       │   └── scripts/..
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.properties
+    │               ├── application.yml
+    │               ├── data.sql
+    │               ├── import.sql
+    │               ├── logback-test.xml
+    │               ├── controller/..
+    │               └── filter/..
+    ├── apollo-assembly/
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/
+    │       │   ├── java/..
+    │       │   └── resources/
+    │       │       ├── application-database-discovery.properties
+    │       │       ├── application-github.properties
+    │       │       ├── application.properties
+    │       │       ├── application.yml
+    │       │       └── logback.xml
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.properties
+    │               ├── application.yml
+    │               └── logback-test.xml
+    ├── apollo-audit/
+    │   ├── README.md
+    │   ├── pom.xml
+    │   ├── apollo-audit-annotation/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── apollo-audit-api/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   ├── apollo-audit-impl/
+    │   │   ├── pom.xml
+    │   │   └── src/..
+    │   └── apollo-audit-spring-boot-starter/
+    │       ├── pom.xml
+    │       └── src/..
+    ├── apollo-biz/
+    │   ├── pom.xml
+    │   └── src/..
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.properties
+    │               ├── data.sql
+    │               ├── import.sql
+    │               ├── logback-test.xml
+    │               ├── json/..
+    │               └── sql/..
+    ├── apollo-build-sql-converter/
+    │   ├── pom.xml
+    │   └── src/..
+    ├── apollo-buildtools/
+    │   ├── pom.xml
+    │   ├── .gitignore
+    │   ├── src/..
+    │   └── style/..
+    ├── apollo-common/
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── main/..
+    │       │   └── resources/
+    │       │       ├── application-h2.properties
+    │       │       ├── application-mysql.properties
+    │       │       ├── application-postgre.properties
+    │       │       ├── application.yaml
+    │       │       └── banner.txt
+    │       └── test/..
+    ├── apollo-configservice/
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── assembly/..
+    │       ├── main/
+    │       │   ├── docker/
+    │       │   │   └── Dockerfile
+    │       │   ├── java/..
+    │       │   ├── resources/
+    │       │   │   ├── apollo-configservice.conf
+    │       │   │   ├── application-consul-discovery.properties
+    │       │   │   ├── application-custom-defined-discovery.properties
+    │       │   │   ├── application-database-discovery.properties
+    │       │   │   ├── application-github.properties
+    │       │   │   ├── application-kubernetes.properties
+    │       │   │   ├── application-nacos-discovery.properties
+    │       │   │   ├── application-zookeeper-discovery.properties
+    │       │   │   ├── application.properties
+    │       │   │   ├── application.yml
+    │       │   │   ├── configservice.properties
+    │       │   │   ├── logback.xml
+    │       │   │   └── jpa/..
+    │       │   └── scripts/..
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.properties
+    │               ├── application.yml
+    │               ├── data.sql
+    │               ├── import.sql
+    │               ├── logback-test.xml
+    │               └── integration-test/..
+    ├── apollo-portal/
+    │   ├── pom.xml
+    │   └── src/
+    │       ├── assembly/..
+    │       ├── main/
+    │       │   ├── docker/
+    │       │   │   └── Dockerfile
+    │       │   ├── java/..
+    │       │   ├── resources/
+    │       │   │   ├── apollo-env.properties
+    │       │   │   ├── apollo-portal.conf
+    │       │   │   ├── application-github.properties
+    │       │   │   ├── application-ldap-activedirectory-sample.yml
+    │       │   │   ├── application-ldap-apacheds-sample.yml
+    │       │   │   ├── application-ldap-openldap-sample.yml
+    │       │   │   ├── application-oidc-sample.yml
+    │       │   │   ├── application.properties
+    │       │   │   ├── application.yml
+    │       │   │   ├── logback.xml
+    │       │   │   ├── portal.properties
+    │       │   │   ├── jpa/
+    │       │   │   │   └── portaldb.init.h2.sql
+    │       │   │   └── static/..
+    │       │   └── scripts/..
+    │       └── test/
+    │           ├── java/..
+    │           └── resources/
+    │               ├── application.properties
+    │               ├── application.yml
+    │               ├── import.sql
+    │               ├── logback-test.xml
+    │               ├── sql/..
+    │               └── yaml/..
+    ├── changes/..
+    ├── doc/
+    │   └── images/
+    │       ├── gray-release/
+    │       ├── local-development/
+    │       └── logo/
+    ├── docs/..
+    ├── scripts/..
+    ├── .github/
+    │   ├── FUNDING.yml
+    │   ├── PULL_REQUEST_TEMPLATE.md
+    │   ├── stale.yml
+    │   ├── ISSUE_TEMPLATE/..
+    │   └── workflows/
+    │       ├── build.yml
+    │       ├── cla.yml
+    │       ├── codeql.yml
+    │       ├── commit_lint.yml
+    │       ├── docker-publish.yml
+    │       └── license.yml
+    └── .mvn/
+        └── wrapper/
+            ├── MavenWrapperDownloader.java
+            └── maven-wrapper.properties
