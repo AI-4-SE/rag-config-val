@@ -84,16 +84,18 @@ def compute_evaluation_metrics():
             "fp": fp,
             "fn": fn,
             "tn": tn,
-            "precision": precision,
-            "recall": recall,
-            "f1_score": f1_score,
-            "accuracy": accuracy,
+            "failures": fp + fn,
+            "precision": round(precision, 2),
+            "recall": round(recall, 2),
+            "f1_score": round(f1_score, 2),
+            "accuracy": round(accuracy, 2),
             "skipped": skipped
         })
 
     df = pd.DataFrame(data=metrics)
     df.to_csv(args.output_file, index=False)
 
+    print(df)
 
 if __name__ == "__main__":
     compute_evaluation_metrics()

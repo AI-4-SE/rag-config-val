@@ -5,12 +5,12 @@ import pandas as pd
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--generation_file", type=str)
-    parser.add_argument("--output_file", type=str)
     return parser.parse_args()
 
 def get_validation_failures():
     # parse args
     args = parse_args()
+    config_name = args.generation_file.split("/")[-1].split(".")[0]
 
     # load generation data
     with open(args.generation_file, "r", encoding="utf-8") as src:
@@ -29,6 +29,7 @@ def get_validation_failures():
             isDependency = model_response["isDependency"]
 
             data = {
+                "id": entry["index"],
                 "model": model,
                 "human_classification": final_rating,
                 "llm_classification": isDependency,
@@ -68,9 +69,13 @@ def get_validation_failures():
             # FN: The LLM validates a dependency as incorrect, but the dependency is actually correct
             if not isDependency and final_rating:
                 failures.append(data)
+
+    output_file = f"../data/evaluation/validation_failures/{config_name}.csv"
             
     df_failures = pd.DataFrame(failures)
-    df_failures.to_csv(args.output_file, index=False)
+    df_failures.to_csv(output_file, index=False)
+
+    print("Length of failures: ", len(df_failures))
 
 if __name__ == "__main__":
     get_validation_failures()
