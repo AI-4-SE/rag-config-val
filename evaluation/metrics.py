@@ -5,7 +5,6 @@ import pandas as pd
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--generation_file", type=str)
-    parser.add_argument("--output_file", type=str)
     return parser.parse_args()
 
 def compute_evaluation_metrics():
@@ -14,6 +13,8 @@ def compute_evaluation_metrics():
     """
     # parse args
     args = parse_args()
+
+    config_name = args.generation_file.split("_")[-1].split(".")[0]
 
     # load generation data
     with open(args.generation_file, "r", encoding="utf-8") as src:
@@ -92,8 +93,10 @@ def compute_evaluation_metrics():
             "skipped": skipped
         })
 
+    output_file = f"../data/evaluation/validation_effectiveness/{config_name}.csv"
+
     df = pd.DataFrame(data=metrics)
-    df.to_csv(args.output_file, index=False)
+    df.to_csv(output_file, index=False)
 
     print(df)
 
