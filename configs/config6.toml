@@ -8,16 +8,16 @@ top_k = 10
 alpha = 0.5
 web_search_enabled = true
 inference_models = [
-    #"gpt-4o-mini-2024-07-18",
-    #"gpt-4o-2024-11-20",
-    #"deepseek-r1:14b",
+    "gpt-4o-mini-2024-07-18",
+    "gpt-4o-2024-11-20",
+    "deepseek-r1:14b",
     "deepseek-r1:70b",
     "llama3.1:70b",
     "llama3.1:8b",
 ]
 temperature = 0.5
 with_context = true
-data_file = "data/evaluation/data/train_dependencies.csv"
+data_file = "data/evaluation/train_dependencies.csv"
 retrieval_file = "data/evaluation/retrieval_results/train_dependencies_config6.json"
 generation_file = "data/evaluation/generation_results/train_dependencies_config6.json"
 advanced = false
