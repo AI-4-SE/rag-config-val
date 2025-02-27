@@ -82,11 +82,6 @@ def run_generation(config: Dict, config_name: str):
                     {"role": "user", "content": query_prompt }
                 ]
 
-                print("System prompt:", system_prompt)
-                print("User prompt:", query_prompt)
-
-                break
-
                 if "generations" not in entry:
                     entry["generations"] = {}
 
@@ -97,8 +92,6 @@ def run_generation(config: Dict, config_name: str):
                     entry["generations"][generator.model_name] = response
                 else:
                     print(f"Generation for entry {entry['index']} of model {generator.model_name} already exists. Skipping generation.")
-                
-                #generation_results.append(entry)
 
                 counter += 1
 
@@ -113,9 +106,6 @@ def run_generation(config: Dict, config_name: str):
                 #generation_results.append(entry)
                 entries_failed.append(entry["index"])
                 continue
-
-        break
-    return
 
     with open(f"data/evaluation/generation_results/dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
         json.dump(data, dest, indent=2)
