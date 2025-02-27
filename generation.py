@@ -1,4 +1,4 @@
-from src.utils import load_config, set_embedding, set_llm, transform
+from src.utils import load_config, set_embedding, set_llm, transform, load_shots, get_projet_description, get_most_similar_shots
 from src.rag import RAG
 from src.generator import GeneratorFactory
 from src.prompts import Prompts
@@ -11,8 +11,6 @@ import os
 import json
 import mlflow
 
-
-mlflow.autolog()
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -39,15 +37,24 @@ def run_generation(config: Dict, config_name: str):
 
     print("Length of data:", len(data))
 
-    if config["with_context"]:
+    if config["with_context"] and not config["advanced"]:
         print("Start generation with context.")
-    else:
+
+    if config["advanced"] and config["with_context"]:
+        print("Start advanced generation with context.")
+
+    if config["advanced"] and not config["with_context"]:
+        print("Start advanced generation without context.")
+    
+    if not config["advanced"] and not config["with_context"]:
         print("Start generation without context.")
+
+    shots = load_shots() if config["advanced"] else None
 
     for generator in generators:
 
         # reset generation results and failed entries
-        generation_results = []
+        #generation_results = []
         entries_failed = []
         counter = 0
 
@@ -56,27 +63,29 @@ def run_generation(config: Dict, config_name: str):
             # transform row data into a dependency
                 dependency = transform(entry)
 
-                # get prompts
+                project_info = get_projet_description(project_name=dependency.project) if config["advanced"] and config["with_context"] else None
+                task_str = Prompts.get_task_str(dependency=dependency)
+                context_str = "\n\n".join([x["text"] for x in entry["context"]])
+                shot_str = "\n\n".join([shot for shot in get_most_similar_shots(shots, dependency)])
+                format_str = Prompts.get_format_prompt()
+
                 system_prompt = Prompts.get_system_str(
                     project_name=dependency.project,
-                    project_info=None,
+                    project_info=project_info,
                     advanced=config["advanced"]
                 )
 
-                task_str = Prompts.get_task_str(dependency=dependency)
-                context_str = "\n\n".join([x["text"] for x in entry["context"]])
-                format_str = Prompts.get_format_prompt()
-                
-
                 # create final query
                 if config["with_context"]:
+                    print("Start generation with context.")
                     query_prompt = Prompts.get_query_str(
                         context_str=context_str,
                         task_str=task_str,
-                        shot_str="",
+                        shot_str=shot_str,
                         advanced=config["advanced"]
                     )
                 else:
+                    print("Start generation without context.")
                     query_prompt = f"{task_str}\n\n{format_str}"
 
 
@@ -96,27 +105,24 @@ def run_generation(config: Dict, config_name: str):
                 else:
                     print(f"Generation for entry {entry['index']} of model {generator.model_name} already exists. Skipping generation.")
                 
-                generation_results.append(entry)
+                #generation_results.append(entry)
 
                 counter += 1
 
                 # Save results every 100 entries
                 if counter % 50 == 0:
                     with open(f"data/evaluation/generation_results/train_dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
-                        json.dump(generation_results, dest, indent=2)
-                    with open(f"data/evaluation/failed_train_{config_name}_{counter}.json.json", "w", encoding="utf-8") as dest:
-                        json.dump(entries_failed, dest, indent=2)
+                        json.dump(data, dest, indent=2)
 
             except Exception as e:
                 print(f"An error occurred for sample: {entry['index']}")
                 print(f"Error: {e}")
-                generation_results.append(entry)
+                #generation_results.append(entry)
                 entries_failed.append(entry["index"])
                 continue
 
-
     with open(f"data/evaluation/generation_results/train_dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
-        json.dump(generation_results, dest, indent=2)
+        json.dump(data, dest, indent=2)
 
     with open(f"data/evaluation/failed_train_{config_name}_{counter}.json.json", "w", encoding="utf-8") as dest:
         json.dump(entries_failed, dest, indent=2)
@@ -139,7 +145,6 @@ def main():
 
         mlflow.log_params(config)
         mlflow.log_artifact(local_path=args.env_file)
-        mlflow.log_artifact(local_path=config["retrieval_file"])
 
         run_generation(config=config, config_name=config_name)
 

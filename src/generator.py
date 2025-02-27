@@ -151,6 +151,7 @@ class OllamaGenerator(Generator):
             temperature=temperature
         )
         print(f"Ollama ({model_name}) generator initialized.")
+        self.client = ollama.Client(timeout=180)
 
     @backoff.on_exception(
         backoff.expo,
@@ -161,7 +162,7 @@ class OllamaGenerator(Generator):
         max_tries=3
     )
     def _generate(self, messages: List) -> Dict:
-        response = ollama.chat(
+        response = self.client.chat(
             model=self.model_name, 
             messages=messages,
             format="json",

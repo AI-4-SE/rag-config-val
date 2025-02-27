@@ -77,7 +77,7 @@ class _Prompts:
             return self._advanced_query_prompt.format(
                 context_str=context_str,
                 task_str=task_str,
-                shots_str=shot_str,
+                shot_str=shot_str,
                 format_str=self.get_format_prompt()
             )
 
@@ -89,7 +89,7 @@ class _Prompts:
 
     def get_system_str(self, project_name: str, project_info: Optional[str] = None, advanced: bool = False) -> str:
         """Get formatted system prompt."""
-        if advanced:
+        if project_info is not None:
             return self._advanced_system_prompt.format(
                 project_name=project_name,
                 project_info=project_info,

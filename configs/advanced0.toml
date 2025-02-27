@@ -1,0 +1,15 @@
+embedding_model = "openai"
+inference_models = [
+    "gpt-4o-mini-2024-07-18",
+    "gpt-4o-2024-11-20",
+    "deepseek-r1:14b",
+    "deepseek-r1:70b",
+    "llama3.1:70b",
+    "llama3.1:8b",
+]
+temperature = 0.5
+with_context = false
+data_file = "data/evaluation/test_dependencies.csv"
+retrieval_file = "data/evaluation/retrieval_results/test_dependencies_advanced0.json"
+generation_file = "data/evaluation/generation_results/test_dependencies_advanced0.json"
+advanced = true

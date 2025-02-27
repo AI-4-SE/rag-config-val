@@ -64,10 +64,6 @@ def run_retrieval(config: Dict, config_name: str):
     dataset=pd.read_csv(config["data_file"])
 
     retrieval_results = []
-
-    #with open("data/evaluation/failed.json", "r", encoding="utf-8") as src:
-    #    failed = json.load(src)
-
     entries_failed = []
     
     for index, row in tqdm(dataset.iterrows(), total=len(dataset), desc="Processing dependencies"):
@@ -75,10 +71,6 @@ def run_retrieval(config: Dict, config_name: str):
 
             # turn row data into dict
             row_dict = row.to_dict()
-
-            #if not row_dict["index"] in failed:
-            #    print(f"Skip sample {row_dict['index']}")
-            #    continue
             
             print(f"Process sample {row_dict['index']}")
 
@@ -169,15 +161,15 @@ def main():
     config = load_config(config_file=args.config_file)
     config_name = os.path.basename(args.config_file).split(".")[0]
 
+    # create mlflow experiment
     mlflow.set_experiment(experiment_name="retrieval")
     
+    # start mlflow run
     with mlflow.start_run(run_name=f"retrieval_{config_name}"): 
 
         mlflow.log_params(config)
         mlflow.log_artifact(local_path=args.env_file)
-
         run_retrieval(config=config, config_name=config_name) 
-
         mlflow.log_artifact(local_path=config["retrieval_file"])
 
 

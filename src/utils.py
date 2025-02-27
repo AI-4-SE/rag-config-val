@@ -67,7 +67,7 @@ def set_llm(inference_model_name: Optional[str]) -> None:
             request_timeout=90.0
     )
     else:
-        raise Exception("Embedding model has to be set.")
+        print("Embedding model has to be set.")
 
 
 def load_config(config_file: str) -> Dict:
@@ -87,7 +87,7 @@ def get_projet_description(project_name: str) -> str:
     """
     Read and return project-specific information.
     """
-    with open(f"../data/project_info/{project_name}.txt", "r", encoding="utf-8") as src:
+    with open(f"data/project_info/{project_name}.txt", "r", encoding="utf-8") as src:
         content = src.read().strip()
 
     return content
@@ -97,7 +97,7 @@ def load_shots() -> List[str]:
     """
     Load shots from the shot pool.
     """
-    shot_pool_path = "../data/shot_pool/"
+    shot_pool_path = "data/shot_pool/"
     shot_files = [shot_pool_path + x for x in os.listdir(shot_pool_path) if ".csv" not in x]
     shots = []
     for shot_file in shot_files:
