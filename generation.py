@@ -37,18 +37,6 @@ def run_generation(config: Dict, config_name: str):
 
     print("Length of data:", len(data))
 
-    if config["with_context"] and not config["advanced"]:
-        print("Start generation with context.")
-
-    if config["advanced"] and config["with_context"]:
-        print("Start advanced generation with context.")
-
-    if config["advanced"] and not config["with_context"]:
-        print("Start advanced generation without context.")
-    
-    if not config["advanced"] and not config["with_context"]:
-        print("Start generation without context.")
-
     shots = load_shots() if config["advanced"] else None
 
     for generator in generators:
@@ -94,6 +82,11 @@ def run_generation(config: Dict, config_name: str):
                     {"role": "user", "content": query_prompt }
                 ]
 
+                print("System prompt:", system_prompt)
+                print("User prompt:", query_prompt)
+
+                break
+
                 if "generations" not in entry:
                     entry["generations"] = {}
 
@@ -111,7 +104,7 @@ def run_generation(config: Dict, config_name: str):
 
                 # Save results every 100 entries
                 if counter % 50 == 0:
-                    with open(f"data/evaluation/generation_results/train_dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
+                    with open(f"data/evaluation/generation_results/dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
                         json.dump(data, dest, indent=2)
 
             except Exception as e:
@@ -121,10 +114,13 @@ def run_generation(config: Dict, config_name: str):
                 entries_failed.append(entry["index"])
                 continue
 
-    with open(f"data/evaluation/generation_results/train_dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
+        break
+    return
+
+    with open(f"data/evaluation/generation_results/dependencies_{config_name}_{counter}.json", "w", encoding="utf-8") as dest:
         json.dump(data, dest, indent=2)
 
-    with open(f"data/evaluation/failed_train_{config_name}_{counter}.json.json", "w", encoding="utf-8") as dest:
+    with open(f"data/evaluation/failed_{config_name}_{counter}.json.json", "w", encoding="utf-8") as dest:
         json.dump(entries_failed, dest, indent=2)
 
 
@@ -145,9 +141,7 @@ def main():
 
         mlflow.log_params(config)
         mlflow.log_artifact(local_path=args.env_file)
-
         run_generation(config=config, config_name=config_name)
-
         mlflow.log_artifact(local_path=config["generation_file"])
 
 

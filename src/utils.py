@@ -87,6 +87,7 @@ def get_projet_description(project_name: str) -> str:
     """
     Read and return project-specific information.
     """
+    print(f"Get project description for {project_name}.")
     with open(f"data/project_info/{project_name}.txt", "r", encoding="utf-8") as src:
         content = src.read().strip()
 
@@ -97,6 +98,7 @@ def load_shots() -> List[str]:
     """
     Load shots from the shot pool.
     """
+    print("Load shots from the shot pool.")
     shot_pool_path = "data/shot_pool/"
     shot_files = [shot_pool_path + x for x in os.listdir(shot_pool_path) if ".csv" not in x]
     shots = []
@@ -129,6 +131,7 @@ def get_most_similar_shot(shots: List[str], dependency: Dependency) -> str:
     """
     Return most similar shot based on the given dependency.
     """
+    print("Get most similar shot.")
     task_str = Prompts.get_task_str(dependency=dependency)
     
     all = shots + [task_str]
@@ -149,6 +152,7 @@ def get_most_similar_shots(shots: List[str], dependency: Dependency) -> str:
     """
     Return most similar shot based on the given dependency.
     """
+    print("Get most similar shots.")
     task_str = Prompts.get_task_str(dependency=dependency)
     
     all = shots + [task_str]
@@ -165,7 +169,6 @@ def get_most_similar_shots(shots: List[str], dependency: Dependency) -> str:
 
 
     return (most_similar_string1, most_similar_string2)
-
 
 
 def get_documents_from_github(project_name: str) -> List[Document]:
