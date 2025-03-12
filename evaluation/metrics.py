@@ -95,6 +95,8 @@ def compute_evaluation_metrics():
 
     output_file = f"../data/evaluation/validation_effectiveness/{config_name}.csv"
 
+    print("Output file: ", output_file)
+
     df = pd.DataFrame(data=metrics)
     df.to_csv(output_file, index=False)
 
