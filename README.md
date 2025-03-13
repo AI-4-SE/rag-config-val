@@ -1,4 +1,4 @@
-Artifact releas for the paper: "On Automating Configuration Dependency Validation via Retrieval-Augmented Generation"
+Artifact release for the paper: "On Automating Configuration Dependency Validation via Retrieval-Augmented Generation"
 
 ## Paper
 PDF: will be linked later
