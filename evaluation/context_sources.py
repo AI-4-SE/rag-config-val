@@ -7,6 +7,7 @@ import colorsys
 import glob
 import json
 
+
 def extract_context_sources():
     retrieval_results_dir = "../data/evaluation/retrieval_results/**"
 
