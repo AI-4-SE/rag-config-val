@@ -77,7 +77,32 @@ class Generator:
         dominant_response = get_dominat_response(responses=response_pool)
 
         return dominant_response
-            
+    
+    def generate_with_ratings(self, messages) -> dict:
+        """Generate responses and return the most dominant response."""
+        response_pool = []
+        ratings = []
+
+        for _ in range(self.max_genrations):
+            try:   
+                 print(f"Generate response using {self.model_name}")
+                 response = self._generate(messages=messages)
+                 ratings.append(response["isDependency"])
+            except Exception as error:
+                 print(f"Exception occurred: {error}. Fall back to DEFAULT RESPONSE")
+                 print(traceback.print_exc())
+                 response = DEFAULT_RESPONSE.copy()
+                 response["error"] = str(error)
+
+            print("Add response to answer pool.")
+            response_pool.append(response)
+
+        # Get dominant responses#
+        print("Get dominant response.")
+        dominant_response = get_dominat_response(responses=response_pool)
+
+        return dominant_response, ratings
+    
     def _generate(self, messages: List) -> str:
         pass
 
