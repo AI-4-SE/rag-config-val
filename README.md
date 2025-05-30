@@ -387,42 +387,42 @@ We derived eight distinct failure categories from the vanilla LLMs and the best 
       <tr>
         <td>Inheritance and Overrides</td>
         <td>This category includes validation failures due to Maven's project inheritance, which allows modules to inherit and override configurations from a parent module, such as general settings, dependencies, plugins, and build settings.</td>
-        <td><em>TODO: Add example</em></td>
+        <td>In <em>piggymetrics</em>, Llama3.1:70b does not recoginze that <em>project.parent_piggymetrics.version</em> inherits the version <em>project.version</em> from the parent POM.</td>
       </tr>
       <tr>
         <td>Configuration Consistency</td>
         <td>Often configuration values are the same across different configuration files, which often leads to dependencies, but sometimes only serves the purpose of consistency. In this category, LLMs confuse equal values for the sake of consistency with real dependencies.</td>
-        <td><em>TODO: Add example</em></td>
+        <td>In <em>litemall</em>, Llama3.1:8b misinterpret identical logging levels in different Spring modules as a dependency, though the equality is likely due to project-wide consistency.</td>
       </tr>
       <tr>
         <td>Resource Sharing</td>
         <td>Resources, such as databases or services can be shared across modules or used exclusively by a single module. Without additional project-specific about available resources, LLMs struggle to infer whether resources are shared or used exclusively by a single module.</td>
-        <td><em>TODO: Add example</em></td>
+        <td>In <em>music-website</em>, GPT-4o-mini does not infers a dependency between <em>services.db.environment.MYSQL_PASSWORD</em> in Docker Compose and <em>spring.datasource.password</em> in Spring although both options refer to the same datasource.</td>
       </tr>
       <tr>
         <td>Port Mapping</td>
         <td>Ports of services are typically defined in several configuration files of different technologies, creating equality-based configuration dependencies. However, not all port mappings have to be equal (e.g. a container and host port in docker compose).</td>
-        <td><em>TODO: Add example</em></td>
+        <td>In <em>mall-swarm</em>, DeepSeek-r1:70b assumes a dependency between the host and container port for a specific service in the Docker Compose file, because both ports have identical values. Although the values are equal, there is no actual configuration dependency between host and container option in Docker Compose.</td>
       </tr>
       <tr>
         <td>Naming Schemes</td>
         <td>Software projects often use ambiguous naming schemes for configuration options and their values. These ambiguities result from generic and commonly used names (e.g., project name) that may not cause configuration errors if not consistent but can easily lead to misinterpretation by LLMs.</td>
-        <td><em>TODO: Add example</em></td>
+        <td><em>In <em>Spring-Cloud-Platform</em>, Llama3.1:8b assumes a dependency between <em>project.artifactId</em> and <em>project.build.finalName</em> due to their identical, although the match stems from Maven naming conventions.</em></td>
       </tr>
       <tr>
         <td>Context (Availability, Retrieval, and Utilization)</td>
         <td>Failures in this category are either because relevant information is missing (e.g. not in the vector database or generally not available to vanilla LLMs), available in the database but not retrieved, or given to the LLM but not utilized to draw the right conclusion.</td>
-        <td><em>TODO: Add example</em></td>
+        <td>Maven's documentation states that <em>4.0.0</em> is the only supported POM version. This information was indexed into the vector database and either not retrieved and utilized when validating a dependency caused by the <em>modelVersion</em> option.</em></td>
       </tr>
       <tr>
         <td>Independent Technologies and Services</td>
         <td>In some cases (e.g. in containerized projects) different components, such as services, are isolated by design. In these cases the configuration options between these components are independent, if not explicitly specified.</td>
-        <td><em>TODO: Add example</em></td>
+        <td>In <em>piggymetrics</em>, Llama3.1:8b falsely assumes a dependency between identical <em>FROM</em> instructions in Dockerfiles of two independent services, not recognizing that the services are isolated and the shared image does not imply a configuration dependency.</td>
       </tr>
       <tr>
         <td>Others</td>
         <td>This category contains all validation failures where the LLMs fail to classify the dependencies correctly that can not be matched to any other category and share no common patterns.</td>
-        <td><em>TODO: Add example</em></td>
+        <td>In <em>litemall</em>, GPT-4o-mini does not infer a dependency between <em>project.artifactId</em> and <em>project.modules.module</em>, although the the parent POM specifices all child modules using their <em>artifactId</em>.</td>
       </tr>
     </tbody>
   </table>
