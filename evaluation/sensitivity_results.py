@@ -105,5 +105,5 @@ def plot_instance_f1_boxplot(json_file_path: str):
 if __name__ == "__main__":
     result = evaluate_rag_results("../data/evaluation/sensitivity/test_dependencies_temp_all.json", "model_temp_scores.csv")
     print(result)
-    plot_linechart(result)
+    #plot_linechart(result)
     #plot_instance_f1_boxplot("../data/evaluation/sensitivity/test_dependencies_temp_all.json")

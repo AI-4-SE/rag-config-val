@@ -96,7 +96,7 @@ def run_sensitivity_analysis(config: Dict):
                     entries_failed.append(entry["index"])
                     continue
 
-            # Save final results for this temperature
+            # Save final reslts for this temperature
             with open(f"data/evaluation/sensitivity/test_dependencies_temp_{temperature}.json", "w", encoding="utf-8") as dest:
                 json.dump(data, dest, indent=2)
 
