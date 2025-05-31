@@ -370,7 +370,7 @@ The following figures show the fraction of sources that the RAG variants have de
 </details>
 
 ### RQ2.1: Validation Failures
-We derived eight distinct failure categories from the vanilla LLMs and the best perfroming RAG variant R1.  The table below summarizes the failure categories along with a brief description and example per category. 
+We derived eight distinct failure categories from the vanilla LLMs and the best perfroming RAG variant R1.  The table below summarizes the failure categories along with a brief description and example per category. We also show the final revised validation prompt.
 
 <details>
   <summary><strong>Failure Categories from vanilla LLMs and R1</strong></summary>
@@ -426,4 +426,36 @@ We derived eight distinct failure categories from the vanilla LLMs and the best 
       </tr>
     </tbody>
   </table>
+</details>
+
+<details>
+  <summary><strong>Revised Validation Prompt</strong></summary>
+
+  <p>
+    You are a full-stack expert in validating intra-technology and cross-technology configuration dependencies. You will be presented with configuration options found in the software project <code>{project_name}</code>. <code>{project_info}</code>. Your task is to determine whether the given configuration options actually depend on each other based on value-equality.
+  </p>
+
+  <code>{dependency_str}</code>
+
+  <p>
+    Information about both configuration options, including their descriptions, prior usages, and examples of similar dependencies are provided below. The provided information comes from various sources, such as manuals, Stack Overflow posts, GitHub repositories, and web search results. Note that not all the provided information may be relevant for validating the dependency. Consider only the information that is relevant for validating the dependency, and disregard the rest.
+  </p>
+
+  <code>{context_str}</code>
+
+  <p>
+    Additionally, here are some examples on how similar dependencies are evaluated:
+  </p>
+
+  <code>{shot_str}</code>
+
+  <p>
+    Given the information and similar examples, perform the following task:<br>
+    Carefully evaluate whether configuration option <code>{nameA}</code> of type <code>{typeA}</code> with value <code>{valueA}</code> in <code>{fileA}</code> of technology <code>{technologyA}</code> depends on configuration option <code>{nameB}</code> of type <code>{typeB}</code> with value <code>{valueB}</code> in <code>{fileB}</code> of technology <code>{technologyB}</code> or vice versa.
+  </p>
+
+  <p>
+    Respond in a JSON format as shown below:
+  </p>
+  <code>{format_str}</code>
 </details>
